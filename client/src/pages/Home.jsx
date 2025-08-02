@@ -1,8 +1,15 @@
 import React from 'react';
+import Banner from '@/components/home/banner';
 
 const Home = () => {
-  console.log('Home component is rendering!');
-  return <div>Home</div>;
+  return (
+    <div className="min-h-screen">
+      <section>
+        <Banner />
+      </section>
+      <span>Banner</span>
+    </div>
+  );
 };
 
 export default Home;
