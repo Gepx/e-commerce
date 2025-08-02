@@ -3,12 +3,12 @@ import { Outlet } from 'react-router-dom';
 
 const RootLayout = () => {
   return (
-    <>
+    <div className="min-h-screen">
       <NavBar />
-      <main>
+      <main className="transition-all duration-200 ease-in-out">
         <Outlet />
       </main>
-    </>
+    </div>
   );
 };
 

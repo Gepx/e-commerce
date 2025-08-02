@@ -3,24 +3,24 @@ import { Link } from 'react-router-dom';
 import { Input } from '../ui/input';
 
 const MobileNav = () => (
-  <div className="z-10 flex flex-col block mt-4 md:hidden w-full">
+  <div className="relative flex flex-col md:hidden w-full ">
     <Link
       to="/cart"
-      className="flex items-center gap-2 hover:bg-gray-100 py-4 px-2 w-full border-b border-gray-300 shadow-none">
-      <ShoppingCart />
-      Cart
+      className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">
+      <ShoppingCart className="w-5 h-5" />
+      <span className="font-medium">Cart</span>
     </Link>
     <Link
       to="/notification"
-      className="flex items-center gap-2 hover:bg-gray-100 py-4 px-2 w-full border-b border-gray-300 shadow-none">
-      <Bell />
-      Notifications
+      className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">
+      <Bell className="w-5 h-5" />
+      <span className="font-medium">Notifications</span>
     </Link>
     <Link
       to="/profile"
-      className="flex items-center gap-2 hover:bg-gray-100 py-4 px-2 w-full border-b border-gray-300 sm:border-black shadow-none">
-      <CircleUserRound />
-      Profile
+      className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">
+      <CircleUserRound className="w-5 h-5" />
+      <span className="font-medium">Profile</span>
     </Link>
     <div className="flex items-center gap-2 border border-gray-300 rounded-md my-4 mx-2 p-2 w-[calc(100%-1rem)] sm:hidden">
       <SearchIcon className="text-gray-500" />
