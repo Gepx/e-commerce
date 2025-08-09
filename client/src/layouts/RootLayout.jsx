@@ -1,5 +1,6 @@
 import NavBar from '@/components/navigation/NavBar';
 import { Outlet } from 'react-router-dom';
+import { Toaster } from '@/components/ui/sonner';
 
 const RootLayout = () => {
   return (
@@ -8,6 +9,7 @@ const RootLayout = () => {
       <main className="transition-all duration-200 ease-in-out">
         <Outlet />
       </main>
+      <Toaster position="top-right" richColors />
     </div>
   );
 };
