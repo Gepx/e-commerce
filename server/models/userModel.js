@@ -13,7 +13,22 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function () {
+      return !this.provider;
+    },
+  },
+  provider: {
+    type: String,
+    enum: ["google", "github"],
+    default: null,
+  },
+  providerId: {
+    type: String,
+    default: null,
+  },
+  avatarUrl: {
+    type: String,
+    default: null,
   },
   role: {
     type: String,
