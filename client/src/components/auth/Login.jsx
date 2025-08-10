@@ -26,22 +26,17 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    console.log('Before Login');
-    console.log(data);
 
     try {
       const response = await authService.login({
         email: data.email,
         password: data.password
       });
-      console.log('Login');
-      console.log('Response: ', response);
+
       setTimeout(() => toast.success('Login successful'), 500);
       navigate('/');
     } catch (error) {
       toast.error(error.message);
-      console.log('Error');
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +79,7 @@ const Login = () => {
                   <div className="flex items-center justify-between">
                     <FormLabel>Password</FormLabel>
                     <Link
-                      to="/reset-password"
+                      to="/auth/reset-password"
                       className="font-semibold text-sm hover:underline leading-none">
                       Forgot Password?
                     </Link>
