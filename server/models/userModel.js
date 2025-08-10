@@ -35,6 +35,14 @@ const userSchema = new Schema({
     default: "user",
     enum: ["user", "admin"],
   },
+  resetOtp: {
+    type: String,
+    default: null,
+  },
+  resetOtpExpires: {
+    type: Date,
+    default: null,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

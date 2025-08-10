@@ -3,7 +3,13 @@ const router = express.Router();
 const AuthController = require("../controllers/authController");
 const OAuthController = require("../controllers/oauthController");
 const { validateSchema } = require("../utils/validateSchema");
-const { registerSchema, loginSchema } = require("../schemas/authSchema");
+const {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  verifyOtpSchema,
+} = require("../schemas/authSchema");
 
 router.post(
   "/register",
@@ -12,6 +18,23 @@ router.post(
 );
 router.post("/login", validateSchema(loginSchema), AuthController.login);
 router.post("/logout", AuthController.logout);
+
+// Reset Password
+router.post(
+  "/forgot-password",
+  validateSchema(forgotPasswordSchema),
+  AuthController.forgotPassword
+);
+router.post(
+  "/verify-otp",
+  validateSchema(verifyOtpSchema),
+  AuthController.verifyOtp
+);
+router.post(
+  "/reset-password",
+  validateSchema(resetPasswordSchema),
+  AuthController.resetPassword
+);
 
 // Provider Auth Routes
 router.get("/:provider", OAuthController.redirect);
