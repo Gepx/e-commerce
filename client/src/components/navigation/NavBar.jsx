@@ -16,7 +16,7 @@ const NavBar = () => {
   const [hamburgerMenu, setHamburgerMenu] = useState(false);
 
   return (
-    <nav className="flex items-center justify-between py-4 px-8 bg-white/95 backdrop-blur-sm text-black ubuntu-font w-full border-b border-gray-200 shadow-sm relative z-50">
+    <nav className="sticky top-0 bg-white/95 backdrop-blur-sm supports-[backdrop-filter]:bg-white/60 flex items-center justify-between py-4 px-8 text-black ubuntu-font w-full border-b border-gray-200 shadow-sm z-50">
       <Link
         to="/"
         className="text-5xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
