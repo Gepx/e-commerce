@@ -5,9 +5,17 @@ import Auth from './pages/Auth';
 import AuthLayout from './layouts/AuthLayout';
 import Register from './components/auth/Register';
 import ResetPassword from './components/auth/ResetPassword';
+import Product from './components/product/Product';
 
 export const router = createBrowserRouter([
-  { path: '/', element: <RootLayout />, children: [{ index: true, element: <Home /> }] },
+  {
+    path: '/',
+    element: <RootLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: '/product/:id', element: <Product /> }
+    ]
+  },
   {
     path: '/auth',
     element: <AuthLayout />,
