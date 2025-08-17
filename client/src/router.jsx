@@ -6,6 +6,9 @@ import AuthLayout from './layouts/AuthLayout';
 import Register from './components/auth/Register';
 import ResetPassword from './components/auth/ResetPassword';
 import Product from './components/product/Product';
+import Profile from './pages/Profile';
+import SidebarLayout from './layouts/SidebarLayout';
+import Address from './components/profile/Address';
 
 export const router = createBrowserRouter([
   {
@@ -24,5 +27,15 @@ export const router = createBrowserRouter([
       { path: 'register', element: <Register /> },
       { path: 'reset-password', element: <ResetPassword /> }
     ]
+  },
+  {
+    path: '/profile',
+    element: <SidebarLayout />,
+    children: [{ index: true, element: <Profile /> }]
+  },
+  {
+    path: '/address',
+    element: <SidebarLayout />,
+    children: [{ index: true, element: <Address /> }]
   }
 ]);
