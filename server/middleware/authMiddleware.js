@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-exports.verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = req.cookies.token || (authHeader && authHeader.split(" ")[1]);
 
@@ -19,3 +19,5 @@ exports.verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized: invalid token" });
   }
 };
+
+module.exports = verifyToken;
