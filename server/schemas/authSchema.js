@@ -3,7 +3,12 @@ const { z } = require("zod");
 const registerSchema = z.object({
   username: z
     .string({ error: "Username is required" })
-    .min(3, { error: "Username must be more than 3 characters long" }),
+    .min(3, { error: "Username must be more than 3 characters long" })
+    .max(10, "Username cannot be more than 10 characters long")
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      "Username can only contain letters, numbers, and underscores"
+    ),
   email: z.email({
     error: "Please enter a valid email address",
   }),
@@ -72,10 +77,19 @@ const resetPasswordSchema = z.object({
     ),
 });
 
+const oauthProfileSchema = z.object({
+  provider: z.enum(["google", "github"]),
+  providerId: z.string().min(1),
+  email: z.email(),
+  username: z.string().min(1),
+  avatarUrl: z.url().nullable(),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
   verifyOtpSchema,
   resetPasswordSchema,
+  oauthProfileSchema,
 };
