@@ -10,6 +10,8 @@ const connectDB = require("./config/db");
 
 const AuthRoutes = require("./routes/authRoutes");
 const UserRoutes = require("./routes/userRoutes");
+const ProductRoutes = require("./routes/productRoutes");
+const AddressRoutes = require("./routes/addressRoutes");
 const { authLimiter, limiter } = require("./utils/rateLimiter");
 
 app.use(express.json());
@@ -32,6 +34,8 @@ connectDB();
 
 app.use("/api/auth", AuthRoutes);
 app.use("/api/users", UserRoutes);
+app.use("/api/products", ProductRoutes);
+app.use("/api/user/addresses", AddressRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
