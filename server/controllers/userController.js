@@ -1,47 +1,115 @@
-const UserService = require("../services/userServices");
+const { z } = require("zod");
+const User = require("../models/userModel");
+const {
+  userIdParamZodSchema,
+  updateUserZodSchema,
+  emailParamZodSchema,
+} = require("../schemas/userZodSchema");
 
-module.exports.getAllUsersController = async (req, res) => {
+const getAllUsersController = async (req, res) => {
   try {
-    const users = await UserService.getAllUsers();
-    res.status(200).json(users);
+    const users = await User.find({ deletedAt: null });
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json({
+      message: "Users retrieved successfully",
+      users: users,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Invalid data provided",
+        errors: error.errors,
+      });
+    }
+    res.status(500).json({ message: "Oops! Something went wrong!" });
   }
 };
-module.exports.getUserByEmailController = async (req, res) => {
+
+const getUserByEmailController = async (req, res) => {
   try {
-    const { email } = req.params;
-    const user = await UserService.getUserByEmail(email);
+    const { email } = await emailParamZodSchema.parseAsync(req.params);
+    const user = await User.findOne({ email, deletedAt: null });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(user);
+    res.status(200).json({
+      message: "User retrieved successfully",
+      user: user,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Invalid data provided",
+        errors: error.errors,
+      });
+    }
+    res.status(500).json({ message: "Oops! Something went wrong!" });
   }
 };
-module.exports.updateUserController = async (req, res) => {
+
+const updateUserController = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updateData = req.body;
-    const updatedUser = await UserService.updateUser(id, updateData);
+    const { id } = await userIdParamZodSchema.parseAsync(req.params);
+    const updateData = await updateUserZodSchema.parseAsync(req.body);
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id, deletedAt: null },
+      updateData,
+      {
+        new: true,
+      }
+    );
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(updatedUser);
+    res.status(200).json({
+      message: "User updated successfully",
+      user: updatedUser,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Invalid data provided",
+        errors: error.errors,
+      });
+    }
+    res.status(500).json({ message: "Oops! Something went wrong!" });
   }
 };
-module.exports.deleteUserController = async (req, res) => {
+const deleteUserController = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleteUser = await UserService.deleteUser(id);
+    const { id } = await userIdParamZodSchema.parseAsync(req.params);
+    if (!id) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+    const deleteUser = await User.findOneAndUpdate(
+      { _id: id },
+      { deletedAt: Date.now() },
+      { new: true }
+    );
     if (!deleteUser) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json({ message: "User deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "User deleted successfully", user: deleteUser });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Invalid data provided",
+        errors: error.errors,
+      });
+    }
+    res.status(500).json({ message: "Oops! Something went wrong!" });
   }
+};
+
+module.exports = {
+  getAllUsersController,
+  getUserByEmailController,
+  updateUserController,
+  deleteUserController,
 };
