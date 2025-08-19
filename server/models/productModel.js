@@ -17,7 +17,7 @@ const variantSchema = new mongoose.Schema(
 
 const productSchema = new mongoose.Schema(
   {
-    productImg: {
+    productImages: {
       type: [String],
       required: true,
     },

@@ -3,6 +3,8 @@ const {
   productZodSchema,
   productIdZodSchema,
 } = require("../schemas/productZodSchema");
+const cloudinary = require("../config/cloudinary");
+const streamUpload = require("../config/cloudinary");
 
 const getAllProducts = async (req, res) => {
   try {
@@ -47,6 +49,14 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const data = req.body;
+
+    if (req.files && req.files.length > 0) {
+      const uploadResults = await Promise.all(
+        req.files.map((file) => streamUpload(file.buffer))
+      );
+      data.productImages = uploadResults.map((res) => res.secure_url);
+    }
+
     const productValidate = await productZodSchema.parseAsync(data);
     const newProduct = new Product(productValidate);
 

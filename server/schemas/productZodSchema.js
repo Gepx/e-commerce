@@ -6,7 +6,7 @@ const variantZodSchema = z.object({
 });
 
 const productZodSchema = z.object({
-  productImg: z.array(z.url()),
+  productImages: z.array(z.url()),
   productName: z.string().min(2).max(100),
   productSpecification: z.object({
     brand: z.string().min(2).optional(),
