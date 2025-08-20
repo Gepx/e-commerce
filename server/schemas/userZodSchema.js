@@ -41,12 +41,14 @@ const userIdParamZodSchema = z.object({
   id: z.string(),
 });
 
-const emailParamZodSchema = z.object({
-  email: z.email("Invalid email format"),
+const queryParamZodSchema = z.object({
+  email: z.email("Invalid email format").optional(),
+  limit: z.coerce().int().positive().optional(),
+  page: z.coerce().int().positive().optional(),
 });
 
 module.exports = {
   updateUserZodSchema,
   userIdParamZodSchema,
-  emailParamZodSchema,
+  queryParamZodSchema,
 };

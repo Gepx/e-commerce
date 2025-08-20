@@ -8,13 +8,7 @@ router.get(
   "/",
   verifyToken,
   authorizeRoles("admin"),
-  UserController.getAllUsersController
-);
-router.get(
-  "/:email",
-  verifyToken,
-  authorizeRoles("admin"),
-  UserController.getUserByEmailController
+  UserController.getUserController
 );
 router.put(
   "/:id",

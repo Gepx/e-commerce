@@ -5,7 +5,7 @@ const {
 } = require("../schemas/addressZodSchema");
 const { userIdParamZodSchema } = require("../schemas/userZodSchema");
 const Address = require("../models/addressModel");
-const { default: z } = require("zod");
+const { z } = require("zod");
 
 const getUserAddresses = async (req, res) => {
   try {

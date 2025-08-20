@@ -3,49 +3,50 @@ const User = require("../models/userModel");
 const {
   userIdParamZodSchema,
   updateUserZodSchema,
-  emailParamZodSchema,
+  queryParamZodSchema,
 } = require("../schemas/userZodSchema");
+const createQueryParams = require("../utils/queryHelper");
 
-const getAllUsersController = async (req, res) => {
+const getUserController = async (req, res) => {
   try {
-    const users = await User.find({ deletedAt: null });
+    const { page, limit, email } = await queryParamZodSchema.parseAsync(
+      req.query
+    );
 
-    if (!users || users.length === 0) {
-      return res.status(404).json({ message: "No users found" });
+    const offset = (page - 1) * limit;
+
+    if (email) {
+      const user = await User.findOne({ email, deletedAt: null });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      return res.status(200).json({
+        message: "User retrieved successfully",
+        user,
+      });
     }
 
-    res.status(200).json({
+    const { page: _p, limit: _l, ...filters } = req.query;
+    const conditions = createQueryParams(filters, "user");
+    conditions.deletedAt = null;
+
+    const [users, total] = await Promise.all([
+      User.find(conditions).skip(offset).limit(limit).sort({ updatedAt: -1 }),
+      User.countDocuments(conditions),
+    ]);
+
+    return res.status(200).json({
       message: "Users retrieved successfully",
-      users: users,
+      users,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        message: "Invalid data provided",
-        errors: error.errors,
-      });
-    }
-    res.status(500).json({ message: "Oops! Something went wrong!" });
-  }
-};
-
-const getUserByEmailController = async (req, res) => {
-  try {
-    const { email } = await emailParamZodSchema.parseAsync(req.params);
-    const user = await User.findOne({ email, deletedAt: null });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json({
-      message: "User retrieved successfully",
-      user: user,
-    });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        message: "Invalid data provided",
-        errors: error.errors,
-      });
+      return res.status(400).json([
+        {
+          message: "Invalid data provided",
+          errors: error.errors,
+        },
+      ]);
     }
     res.status(500).json({ message: "Oops! Something went wrong!" });
   }
@@ -108,8 +109,7 @@ const deleteUserController = async (req, res) => {
 };
 
 module.exports = {
-  getAllUsersController,
-  getUserByEmailController,
+  getUserController,
   updateUserController,
   deleteUserController,
 };

@@ -2,16 +2,39 @@ const Product = require("../models/productModel");
 const {
   productZodSchema,
   productIdZodSchema,
+  queryParamZodSchema,
 } = require("../schemas/productZodSchema");
-const cloudinary = require("../config/cloudinary");
 const streamUpload = require("../config/cloudinary");
+const createQueryParams = require("../utils/queryHelper");
+const { default: z } = require("zod");
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({ deletedAt: null });
+    const { page, limit } = queryParamZodSchema.parse(req.query);
+
+    const offset = (page - 1) * limit;
+
+    const { page: _p, limit: _l, ...filters } = req.query;
+    const conditions = createQueryParams(filters, "product");
+    conditions.deletedAt = null;
+
+    const [products, total] = await Promise.all([
+      Product.find(conditions)
+        .skip(offset)
+        .limit(limit)
+        .sort({ updatedAt: -1 }),
+      Product.countDocuments(conditions),
+    ]);
+
     res.status(200).json({
       message: "Product retrieved successfully",
       products,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
