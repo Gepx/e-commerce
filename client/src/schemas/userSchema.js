@@ -1,6 +1,6 @@
-const { z } = require('zod');
+import { z } from 'zod';
 
-const updateUserSchema = z.object({
+export const updateUserSchema = z.object({
   username: z
     .string({ error: 'Username is required' })
     .trim()
@@ -34,16 +34,10 @@ const updateUserSchema = z.object({
   avatarUrl: z.url({ error: 'Invalid avatar URL' }).nullable().optional()
 });
 
-const userIdParamSchema = z.object({
+export const userIdParamSchema = z.object({
   id: z.string()
 });
 
-const queryParamSchema = z.object({
+export const queryParamSchema = z.object({
   email: z.email('Invalid email format').optional()
 });
-
-module.exports = {
-  updateUserSchema,
-  userIdParamSchema,
-  queryParamSchema
-};

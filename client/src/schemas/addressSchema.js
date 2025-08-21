@@ -1,4 +1,4 @@
-const { z } = require('zod');
+import { z } from 'zod';
 
 const baseAddressSchema = {
   label: z
@@ -36,9 +36,9 @@ const baseAddressSchema = {
   isDefault: z.boolean().optional().default(false)
 };
 
-const createAddressSchema = z.object(baseAddressSchema);
+export const createAddressSchema = z.object(baseAddressSchema);
 
-const updateAddressSchema = z.object({
+export const updateAddressSchema = z.object({
   label: baseAddressSchema.label.optional(),
   recipientName: baseAddressSchema.recipientName.optional(),
   phone: baseAddressSchema.phone.optional(),
@@ -49,12 +49,6 @@ const updateAddressSchema = z.object({
   isDefault: baseAddressSchema.isDefault
 });
 
-const addressIdParamSchema = z.object({
+export const addressIdParamSchema = z.object({
   id: z.string({ error: 'Invalid address ID format' })
 });
-
-module.exports = {
-  createAddressSchema,
-  updateAddressSchema,
-  addressIdParamSchema
-};

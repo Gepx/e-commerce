@@ -1,11 +1,11 @@
-const { z } = require('zod');
+import { z } from 'zod';
 
-const variantSchema = z.object({
+export const variantSchema = z.object({
   type: z.enum(['color', 'size']),
   options: z.array(z.string())
 });
 
-const productSchema = z.object({
+export const productSchema = z.object({
   productImages: z.array(z.url()),
   productName: z.string().min(2).max(100),
   productSpecification: z.object({
@@ -37,11 +37,6 @@ const productSchema = z.object({
     .default([])
 });
 
-const productIdSchema = z.object({
+export const productIdSchema = z.object({
   id: z.string()
 });
-
-module.exports = {
-  productSchema,
-  productIdSchema
-};
