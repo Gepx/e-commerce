@@ -43,8 +43,8 @@ const userIdParamZodSchema = z.object({
 
 const queryParamZodSchema = z.object({
   email: z.email("Invalid email format").optional(),
-  limit: z.coerce().int().positive().optional(),
-  page: z.coerce().int().positive().optional(),
+  limit: z.coerce.number().int().positive().optional(),
+  page: z.coerce.number().int().positive().optional(),
 });
 
 module.exports = {

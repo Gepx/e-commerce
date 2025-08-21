@@ -44,10 +44,10 @@ const productIdZodSchema = z.object({
 const queryParamZodSchema = z.object({
   search: z.string().min(2).optional(),
   category: z.string().min(2).optional(),
-  minPrice: z.coerce().number().min(0).optional(),
-  maxPrice: z.coerce().number().min(0).optional(),
-  limit: z.coerce().int().positive().optional(),
-  page: z.coerce().int().positive().optional(),
+  minPrice: z.coerce.number().min(0).optional(),
+  maxPrice: z.coerce.number().min(0).optional(),
+  limit: z.coerce.number().int().positive().optional(),
+  page: z.coerce.number().int().positive().optional(),
 });
 
 module.exports = {
