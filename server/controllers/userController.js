@@ -108,8 +108,30 @@ const deleteUserController = async (req, res) => {
   }
 };
 
+const getUserProfileController = async (req, res) => {
+  try {
+    const { userId } = await userIdParamZodSchema.parseAsync(req.user.id);
+    const user = await User.findById(userId).where({ deletedAt: null });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "User profile retrieved successfully", user });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Invalid data provided",
+        errors: error.errors,
+      });
+    }
+    res.status(500).json({ message: "Oops! Something went wrong!" });
+  }
+};
+
 module.exports = {
   getUserController,
   updateUserController,
   deleteUserController,
+  getUserProfileController,
 };

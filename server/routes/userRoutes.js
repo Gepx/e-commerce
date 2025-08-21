@@ -23,4 +23,6 @@ router.delete(
   UserController.deleteUserController
 );
 
+router.get("/:userId", verifyToken, UserController.getUserProfileController);
+
 module.exports = router;

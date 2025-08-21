@@ -10,6 +10,7 @@ const {
   resetPasswordSchema,
   verifyOtpSchema,
 } = require("../schemas/authSchema");
+const verifyToken = require("../middleware/authMiddleware");
 
 router.post(
   "/register",
@@ -18,6 +19,8 @@ router.post(
 );
 router.post("/login", validateSchema(loginSchema), AuthController.login);
 router.post("/logout", AuthController.logout);
+
+router.get("/me", verifyToken, AuthController.me);
 
 // Reset Password
 router.post(
