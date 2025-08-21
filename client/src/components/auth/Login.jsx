@@ -9,9 +9,10 @@ import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/schemas/authSchema';
 import { toast } from 'sonner';
-import authService from '@/services/authService';
+import { useAuth } from '@/context/AuthContext';
 
 const Login = () => {
+  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await authService.login({
+      await login({
         email: data.email,
         password: data.password
       });
