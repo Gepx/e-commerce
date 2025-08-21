@@ -6,7 +6,16 @@ class UserService {
       const response = await api.get('/users', { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to retrieve user profile!');
+      throw new Error(error.response?.data?.message || 'Failed to retrieve users information!');
+    }
+  }
+
+  async getUserProfile(id) {
+    try {
+      const response = await api.get(`/users/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to retrieve user profile');
     }
   }
 

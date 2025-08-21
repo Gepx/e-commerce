@@ -29,6 +29,15 @@ class AuthService {
     }
   }
 
+  async me() {
+    try {
+      const res = await api.get('/auth/me');
+      return res.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to retrieve user profile!');
+    }
+  }
+
   async requestPasswordOtp(email) {
     try {
       const res = await api.post('/auth/forgot-password', { email });

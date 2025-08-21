@@ -36,6 +36,14 @@ class AddressService {
       throw new Error(error.response?.data?.message || 'Failed to delete address!');
     }
   }
+
+  async setDefaultAddress(id) {
+    try {
+      await this.updateAddress(id, { isDefault: true });
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to set default address!');
+    }
+  }
 }
 
 export default new AddressService();
