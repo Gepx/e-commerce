@@ -9,6 +9,8 @@ import Product from './components/product/Product';
 import Profile from './pages/Profile';
 import SidebarLayout from './layouts/SidebarLayout';
 import Address from './components/profile/Address';
+import Dashboard from './pages/admin/Dashboard';
+import AdminLayout from './pages/admin/AdminLayout';
 
 export const router = createBrowserRouter([
   {
@@ -37,5 +39,10 @@ export const router = createBrowserRouter([
     path: '/address',
     element: <SidebarLayout />,
     children: [{ index: true, element: <Address /> }]
+  },
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [{ index: true, element: <Dashboard /> }]
   }
 ]);
