@@ -27,7 +27,6 @@ export default function AdminLayout() {
                 <Separator orientation="vertical" className="mr-2 h-4" />
               </div>
 
-              {/* Single Logout Button - Only in Header */}
               <AlertWrapper
                 onAction={handleLogout}
                 title="Are You Sure?"
