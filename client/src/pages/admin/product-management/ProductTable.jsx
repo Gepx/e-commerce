@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import productService from '@/services/productService';
 import Loading from '../loading';
 import AddProductDialog from './AddProductDialog';
+import DeleteWrapper from '@/components/alert-wrapper/delete-wrapper';
 
 const ProductTable = memo(() => {
   const queryClient = useQueryClient();
@@ -93,24 +94,21 @@ const ProductTable = memo(() => {
         cell: ({ row }) => {
           return (
             <div className="flex items-center gap-2">
-              <Button variant="default" size="icon">
-                <Pen className="h-4 w-4 text-white" />
+              <Button variant="warning" size="icon" className="cursor-pointer">
+                <Pen className="h-4 w-4" />
               </Button>
-              <Button variant="warning" size="icon">
-                <Eye className="h-4 w-4 text-white" />
+              <Button variant="default" size="icon" className="cursor-pointer">
+                <Eye className="h-4 w-4" />
               </Button>
-              <Button
-                variant="destructive"
-                size="icon"
-                disabled={deleting}
-                onClick={() => {
-                  // Gootta change to Alert Dialog, and add a confirmation dialog
-                  if (confirm('Delete this product?')) {
-                    deleteProduct(row.original._id);
-                  }
-                }}>
-                <Trash2 className="h-4 w-4 text-white" />
-              </Button>
+              <DeleteWrapper onConfirm={() => deleteProduct(row.original._id)} isPending={deleting}>
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="cursor-pointer"
+                  disabled={deleting}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </DeleteWrapper>
             </div>
           );
         }
