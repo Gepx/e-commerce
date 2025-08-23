@@ -34,7 +34,11 @@ const updateUserZodSchema = z.object({
       message: "Date of birth must be in the past",
     })
     .optional(),
-  avatarUrl: z.url({ error: "Invalid avatar URL" }).nullable().optional(),
+  avatarUrl: z
+    .string()
+    .url({ error: "Invalid avatar URL" })
+    .nullable()
+    .optional(),
 });
 
 const userIdParamZodSchema = z.object({
@@ -42,7 +46,7 @@ const userIdParamZodSchema = z.object({
 });
 
 const queryParamZodSchema = z.object({
-  email: z.email("Invalid email format").optional(),
+  email: z.string().email("Invalid email format").optional(),
   limit: z.coerce.number().int().positive().optional(),
   page: z.coerce.number().int().positive().optional(),
 });

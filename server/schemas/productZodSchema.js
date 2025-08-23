@@ -5,25 +5,35 @@ const variantZodSchema = z.object({
   options: z.array(z.string()),
 });
 
+const variationZodSchema = z.object({
+  attributes: z.record(z.string()),
+  stock: z.number().nonnegative().default(0),
+  price: z.number().nonnegative().optional(),
+  image: z.string().optional(),
+});
+
 const productZodSchema = z.object({
-  productImages: z.array(z.url()),
+  productImages: z.array(z.string()).min(1, "At least one image is required"),
   productName: z.string().min(2).max(100),
   productSpecification: z.object({
-    brand: z.string().min(2).optional(),
+    brand: z.string().optional(),
     weight: z
       .object({
         value: z.number(),
         unit: z.enum(["g", "kg", "lb"]),
       })
       .optional(),
-    material: z.array(z.string().min(2)).optional(),
-    origin: z.string().min(2).optional(),
-    warranty: z.string().min(2).optional(),
+    material: z.string().optional(),
+    origin: z.string().optional(),
+    warranty: z.string().optional(),
   }),
-  productDescription: z.string().min(10).max(1000),
-  productCategory: z.array(z.string().min(2)),
+  productDescription: z.string().min(10),
+  productCategory: z
+    .array(z.string())
+    .min(1, "At least one product category is required."),
   variants: z.array(variantZodSchema).optional().default([]),
-  productPrice: z.number().positive(),
+  variations: z.array(variationZodSchema).optional().default([]),
+  productPrice: z.number().nonnegative(),
   stock: z.number().nonnegative().default(0),
   reviews: z
     .array(

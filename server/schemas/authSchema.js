@@ -9,7 +9,7 @@ const registerSchema = z.object({
       /^[a-zA-Z0-9_]+$/,
       "Username can only contain letters, numbers, and underscores"
     ),
-  email: z.email({
+  email: z.string().email({
     error: "Please enter a valid email address",
   }),
   password: z
@@ -29,7 +29,7 @@ const registerSchema = z.object({
 });
 
 const loginSchema = z.object({
-  email: z.email({
+  email: z.string().email({
     error: "Please enter a valid email address",
   }),
   password: z
@@ -48,13 +48,13 @@ const loginSchema = z.object({
 });
 
 const forgotPasswordSchema = z.object({
-  email: z.email({
+  email: z.string().email({
     error: "Please enter a valid email address",
   }),
 });
 
 const verifyOtpSchema = z.object({
-  email: z.email({
+  email: z.string().email({
     error: "Please enter a valid email address",
   }),
   otp: z.string().min(6).max(6),
@@ -80,9 +80,9 @@ const resetPasswordSchema = z.object({
 const oauthProfileSchema = z.object({
   provider: z.enum(["google", "github"]),
   providerId: z.string().min(1),
-  email: z.email(),
+  email: z.string().email(),
   username: z.string().min(1),
-  avatarUrl: z.url().nullable(),
+  avatarUrl: z.string().url().nullable(),
 });
 
 module.exports = {
