@@ -11,6 +11,8 @@ import SidebarLayout from './layouts/SidebarLayout';
 import Address from './components/profile/Address';
 import Dashboard from './pages/admin/Dashboard';
 import AdminLayout from './pages/admin/AdminLayout';
+import ProductTable from './pages/admin/product-management/ProductTable';
+import UserTable from './pages/admin/user-management/UserTable';
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +45,10 @@ export const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminLayout />,
-    children: [{ index: true, element: <Dashboard /> }]
+    children: [
+      { index: true, element: <Dashboard /> },
+      { path: 'users', element: <UserTable /> },
+      { path: 'products', element: <ProductTable /> }
+    ]
   }
 ]);
