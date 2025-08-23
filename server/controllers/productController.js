@@ -4,9 +4,9 @@ const {
   productIdZodSchema,
   queryParamZodSchema,
 } = require("../schemas/productZodSchema");
-const streamUpload = require("../config/cloudinary");
 const createQueryParams = require("../utils/queryHelper");
-const { default: z } = require("zod");
+const { z } = require("zod");
+const parseData = require("../utils/productProcessor");
 
 const getAllProducts = async (req, res) => {
   try {
@@ -71,16 +71,10 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const data = req.body;
-
-    if (req.files && req.files.length > 0) {
-      const uploadResults = await Promise.all(
-        req.files.map((file) => streamUpload(file.buffer))
-      );
-      data.productImages = uploadResults.map((res) => res.secure_url);
-    }
+    let data = await parseData(req.body, req.files);
 
     const productValidate = await productZodSchema.parseAsync(data);
+
     const newProduct = new Product(productValidate);
 
     await newProduct.save();
@@ -103,7 +97,7 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = productIdZodSchema.parse(req.params);
-    const data = req.body;
+    let data = await parseData(req.body, req.files);
 
     const productValidate = await productZodSchema.parseAsync(data);
     const updateProductData = await Product.findByIdAndUpdate(
