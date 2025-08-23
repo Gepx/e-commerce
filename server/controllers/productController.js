@@ -74,7 +74,6 @@ const createProduct = async (req, res) => {
     let data = await parseData(req.body, req.files);
 
     const productValidate = await productZodSchema.parseAsync(data);
-
     const newProduct = new Product(productValidate);
 
     await newProduct.save();
