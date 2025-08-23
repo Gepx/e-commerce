@@ -15,6 +15,20 @@ const variantSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const variationSchema = new mongoose.Schema(
+  {
+    attributes: {
+      type: Map,
+      of: String,
+      default: {},
+    },
+    stock: { type: Number, default: 0, min: 0 },
+    price: { type: Number },
+    image: { type: String },
+  },
+  { _id: false }
+);
+
 const productSchema = new mongoose.Schema(
   {
     productImages: {
@@ -31,7 +45,7 @@ const productSchema = new mongoose.Schema(
         value: Number,
         unit: { type: String, enum: ["g", "kg", "lb"] },
       },
-      material: [String],
+      material: String,
       origin: String,
       warranty: String,
     },
@@ -39,12 +53,16 @@ const productSchema = new mongoose.Schema(
       type: String,
     },
     productCategory: {
-      type: String,
+      type: [String],
       default: [],
       required: true,
     },
     variants: {
       type: [variantSchema],
+      default: [],
+    },
+    variations: {
+      type: [variationSchema],
       default: [],
     },
     productPrice: {
