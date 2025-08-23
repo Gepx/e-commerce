@@ -5,9 +5,9 @@ import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import productService from '@/services/productService';
 import Loading from '../loading';
 import userService from '@/services/userService';
+import DeleteWrapper from '@/components/alert-wrapper/delete-wrapper';
 
 const UserTable = () => {
   const queryClient = useQueryClient();
@@ -19,9 +19,9 @@ const UserTable = () => {
 
   const params = { page, limit, ...(userName ? { userName } : {}) };
 
-  const { data, isFetching, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['users', params],
-    queryFn: () => productService.getAllProducts(params),
+    queryFn: () => userService.getUsers(params),
     keepPreviousData: true
   });
 
@@ -81,23 +81,23 @@ const UserTable = () => {
         cell: ({ row }) => {
           return (
             <div className="flex items-center gap-2">
-              <Button variant="default" size="icon">
-                <Pen className="h-4 w-4 text-white" />
+              <Button variant="warning" size="icon" className="cursor-pointer">
+                <Pen className="h-4 w-4" />
               </Button>
-              <Button variant="warning" size="icon">
-                <Eye className="h-4 w-4 text-white" />
+              <Button variant="default" size="icon" className="cursor-pointer">
+                <Eye className="h-4 w-4" />
               </Button>
-              <Button
-                variant="destructive"
-                size="icon"
-                disabled={deleting}
-                onClick={() => {
-                  if (confirm('Delete this user?')) {
-                    deleteUserAccount(row.original._id);
-                  }
-                }}>
-                <Trash2 className="h-4 w-4 text-white" />
-              </Button>
+              <DeleteWrapper
+                onConfirm={() => deleteUserAccount(row.original._id)}
+                isPending={deleting}>
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="cursor-pointer"
+                  disabled={deleting}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </DeleteWrapper>
             </div>
           );
         }
@@ -108,6 +108,14 @@ const UserTable = () => {
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <p className="text-muted-foreground">Failed to load users.</p>
+      </div>
+    );
   }
 
   return (
