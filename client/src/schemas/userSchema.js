@@ -31,7 +31,7 @@ export const updateUserSchema = z.object({
       message: 'Date of birth must be in the past'
     })
     .optional(),
-  avatarUrl: z.url({ error: 'Invalid avatar URL' }).nullable().optional()
+  avatarUrl: z.string().url({ error: 'Invalid avatar URL' }).nullable().optional()
 });
 
 export const userIdParamSchema = z.object({
@@ -39,5 +39,5 @@ export const userIdParamSchema = z.object({
 });
 
 export const queryParamSchema = z.object({
-  email: z.email('Invalid email format').optional()
+  email: z.string().email('Invalid email format').optional()
 });
