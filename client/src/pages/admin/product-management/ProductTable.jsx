@@ -1,7 +1,7 @@
 import { DataTable } from '@/components/data-table/data-table';
 import { Button } from '@/components/ui/button';
 import { Eye, Pen, Trash2 } from 'lucide-react';
-import { useMemo, memo } from 'react';
+import { useMemo, memo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -9,6 +9,7 @@ import productService from '@/services/productService';
 import Loading from '../loading';
 import AddProductDialog from './AddProductDialog';
 import DeleteWrapper from '@/components/alert-wrapper/delete-wrapper';
+import EditProductDialog from './EditProductDialog';
 
 const ProductTable = memo(() => {
   const queryClient = useQueryClient();
@@ -25,6 +26,8 @@ const ProductTable = memo(() => {
     queryFn: () => productService.getAllProducts(params),
     keepPreviousData: true
   });
+
+  const [editDialog, setEditDialog] = useState({ isOpen: false });
 
   const { mutate: deleteProduct, isPending: deleting } = useMutation({
     mutationFn: (id) => productService.deleteProduct(id),
@@ -94,9 +97,7 @@ const ProductTable = memo(() => {
         cell: ({ row }) => {
           return (
             <div className="flex items-center gap-2">
-              <Button variant="warning" size="icon" className="cursor-pointer">
-                <Pen className="h-4 w-4" />
-              </Button>
+              <EditProductDialog product={row.original} />
               <Button variant="default" size="icon" className="cursor-pointer">
                 <Eye className="h-4 w-4" />
               </Button>

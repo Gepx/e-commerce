@@ -1,30 +1,31 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormControl,
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
+import useProductForm from '@/hooks/useProductForm';
+import { Pen } from 'lucide-react';
+
 import ProductImagesInput from './components/ProductImagesInput';
 import ProductSpecifications from './components/ProductSpecifications';
 import ProductCategories from './components/ProductCategories';
 import ProductVariants from './components/ProductVariants';
-import useProductForm from '@/hooks/useProductForm';
 
-const AddProductDialog = () => {
+const EditProductDialog = ({ product }) => {
   const [open, setOpen] = useState(false);
 
   const {
@@ -52,18 +53,22 @@ const AddProductDialog = () => {
     variantStock,
     variantPrice,
     activeVariants
-  } = useProductForm({ setDialogOpen: setOpen });
+  } = useProductForm({
+    initialData: product,
+    setDialogOpen: setOpen
+  });
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="cursor-pointer">Add New Product</Button>
+        <Button variant="warning" size="icon" className="cursor-pointer">
+          <Pen className="h-4 w-4" />
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Product</DialogTitle>
-          <DialogDescription>Please fill in the details to add a new product.</DialogDescription>
+          <DialogTitle>Edit Product</DialogTitle>
         </DialogHeader>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-4">
             <FormField
@@ -166,7 +171,7 @@ const AddProductDialog = () => {
             />
 
             <Button type="submit" className="w-full cursor-pointer" disabled={isPending}>
-              {isPending ? 'Adding Product...' : 'Add Product'}
+              {isPending ? 'Saving...' : 'Save'}
             </Button>
           </form>
         </Form>
@@ -175,4 +180,4 @@ const AddProductDialog = () => {
   );
 };
 
-export default AddProductDialog;
+export default EditProductDialog;
