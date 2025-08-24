@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import productService from '@/services/productService';
 import { productSchema } from '@/schemas/productSchema';
 import { useMutation } from '@tanstack/react-query';
 
-const useProductForm = (setDialogOpen) => {
+const useProductForm = ({ initialData = null, setDialogOpen }) => {
   const [activeVariants, setActiveVariants] = useState({});
   const [variantOptions, setVariantOptions] = useState({});
   const [variantStock, setVariantStock] = useState({});
@@ -18,7 +18,7 @@ const useProductForm = (setDialogOpen) => {
 
   const form = useForm({
     resolver: zodResolver(productSchema),
-    defaultValues: {
+    defaultValues: initialData || {
       productName: '',
       productImages: [],
       productSpecification: {
@@ -39,6 +39,43 @@ const useProductForm = (setDialogOpen) => {
       reviews: []
     }
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.reset(initialData);
+
+      setSelectedCategories(initialData.productCategory || []);
+      setImagePreviews(
+        initialData.productImages?.map((img) => ({ file: null, preview: img })) || []
+      );
+
+      if (initialData.variants && initialData.variations) {
+        const newActiveVariants = {};
+        const newVariantOptions = {};
+        initialData.variants.forEach((variant) => {
+          newActiveVariants[variant.type] = true;
+          newVariantOptions[variant.type] = variant.options;
+        });
+        setActiveVariants(newActiveVariants);
+        setVariantOptions(newVariantOptions);
+
+        const newVariantStock = {};
+        const newVariantPrice = {};
+        initialData.variations.forEach((variation) => {
+          const combinationKey = Object.keys(variation.attributes)
+            .sort()
+            .map((key) => variation.attributes[key])
+            .join('|');
+
+          newVariantStock[combinationKey] = variation.stock;
+          newVariantPrice[combinationKey] = variation.price;
+        });
+
+        setVariantStock({ combinations: newVariantStock });
+        setVariantPrice({ combinations: newVariantPrice });
+      }
+    }
+  }, [initialData, form]);
 
   const queryClient = useQueryClient();
 
@@ -62,6 +99,20 @@ const useProductForm = (setDialogOpen) => {
       toast.error(err?.message || 'Failed to create product.');
     }
   });
+
+  const { mutate: updateProduct, isPending: updating } = useMutation({
+    mutationFn: (payload) => productService.updateProduct(payload.id, payload.data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
+      toast.success('Product updated successfully');
+      setDialogOpen(false);
+    },
+    onError: (err) => {
+      toast.error(err?.message || 'Failed to update product.');
+    }
+  });
+
+  const isPending = creating || updating;
 
   const typeVariants = [
     {
@@ -219,16 +270,25 @@ const useProductForm = (setDialogOpen) => {
       const formData = new FormData();
 
       Object.keys(data).forEach((key) => {
-        if (key !== 'productImages' && key !== 'variants' && key !== 'variations') {
-          const value = data[key];
+        if (key === 'productImages') return;
 
-          if (typeof value === 'object' && value !== null) {
-            formData.append(key, JSON.stringify(value));
-          } else {
-            formData.append(key, String(value || ''));
+        const value = data[key];
+
+        if (value instanceof FileList) {
+          for (let i = 0; i < value.length; i++) {
+            formData.append(key, value[i]);
           }
+        } else if (typeof value === 'object' && value !== null) {
+          formData.append(key, JSON.stringify(value));
+        } else if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
         }
       });
+
+      const existingImageUrls = imagePreviews
+        .map((img) => img.preview)
+        .filter((url) => typeof url === 'string');
+      formData.append('existingImages', JSON.stringify(existingImageUrls));
 
       imageFiles.forEach((file) => {
         formData.append('productImages', file);
@@ -240,7 +300,7 @@ const useProductForm = (setDialogOpen) => {
           type,
           options: variantOptions[type].filter((option) => option.trim() !== '')
         }));
-      formData.append('variants', JSON.stringify(variants));
+      formData.set('variants', JSON.stringify(variants));
 
       const variations = generateVariantCombinations.map((combination) => {
         const key = Object.values(combination).join('|');
@@ -252,16 +312,23 @@ const useProductForm = (setDialogOpen) => {
       });
       formData.append('variations', JSON.stringify(variations));
 
-      createProduct(formData);
+      if (initialData) {
+        updateProduct({ id: initialData._id, data: formData });
+      } else {
+        createProduct(formData);
+      }
     },
     [
       imageFiles,
+      imagePreviews,
       activeVariants,
       variantOptions,
       generateVariantCombinations,
       variantStock,
       variantPrice,
-      createProduct
+      initialData,
+      createProduct,
+      updateProduct
     ]
   );
 
@@ -279,7 +346,7 @@ const useProductForm = (setDialogOpen) => {
 
   return {
     form,
-    creating,
+    isPending,
     onSubmit,
     onInvalid,
     addVariantOption,
@@ -305,5 +372,4 @@ const useProductForm = (setDialogOpen) => {
     setDialogOpen
   };
 };
-
 export default useProductForm;
