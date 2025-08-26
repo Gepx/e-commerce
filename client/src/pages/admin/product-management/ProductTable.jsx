@@ -10,6 +10,7 @@ import Loading from '../loading';
 import AddProductDialog from './AddProductDialog';
 import DeleteWrapper from '@/components/alert-wrapper/delete-wrapper';
 import EditProductDialog from './EditProductDialog';
+import DetailProductDialog from './DetailProductDialog';
 
 const ProductTable = memo(() => {
   const queryClient = useQueryClient();
@@ -98,9 +99,7 @@ const ProductTable = memo(() => {
           return (
             <div className="flex items-center gap-2">
               <EditProductDialog product={row.original} />
-              <Button variant="default" size="icon" className="cursor-pointer">
-                <Eye className="h-4 w-4" />
-              </Button>
+              <DetailProductDialog product={row.original} />
               <DeleteWrapper onConfirm={() => deleteProduct(row.original._id)} isPending={deleting}>
                 <Button
                   variant="destructive"
