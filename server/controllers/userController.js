@@ -38,6 +38,12 @@ const getUserController = async (req, res) => {
     return res.status(200).json({
       message: "Users retrieved successfully",
       users,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
