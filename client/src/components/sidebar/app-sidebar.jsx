@@ -38,6 +38,11 @@ const profileMenuItems = [
 
 const adminMenuItems = [
   {
+    title: 'Home',
+    url: '/',
+    icon: Home
+  },
+  {
     title: 'Dashboard',
     url: '/admin',
     icon: BarChart3
