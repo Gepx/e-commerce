@@ -133,7 +133,6 @@ const EditProductDialog = ({ product }) => {
               )}
             />
 
-            {/* General Stock input (disabled when variants active) */}
             <FormField
               control={form.control}
               name="stock"
