@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import Loading from '../loading';
 import userService from '@/services/userService';
 import DeleteWrapper from '@/components/alert-wrapper/delete-wrapper';
+import DetailUserDialog from './DetailUserDialog';
 
 const UserTable = () => {
   const queryClient = useQueryClient();
@@ -81,12 +82,7 @@ const UserTable = () => {
         cell: ({ row }) => {
           return (
             <div className="flex items-center gap-2">
-              <Button variant="warning" size="icon" className="cursor-pointer">
-                <Pen className="h-4 w-4" />
-              </Button>
-              <Button variant="default" size="icon" className="cursor-pointer">
-                <Eye className="h-4 w-4" />
-              </Button>
+              <DetailUserDialog user={row.original} />
               <DeleteWrapper
                 onConfirm={() => deleteUserAccount(row.original._id)}
                 isPending={deleting}>
