@@ -6,6 +6,7 @@ const {
   queryParamZodSchema,
 } = require("../schemas/userZodSchema");
 const createQueryParams = require("../utils/queryHelper");
+const streamUpload = require("../config/cloudinary");
 
 const getUserController = async (req, res) => {
   try {
@@ -86,6 +87,7 @@ const updateUserController = async (req, res) => {
     res.status(500).json({ message: "Oops! Something went wrong!" });
   }
 };
+
 const deleteUserController = async (req, res) => {
   try {
     const { id } = await userIdParamZodSchema.parseAsync(req.params);
@@ -135,9 +137,76 @@ const getUserProfileController = async (req, res) => {
   }
 };
 
+const updateAvatarController = async (req, res) => {
+  try {
+    const { id } = await userIdParamZodSchema.parseAsync(req.params);
+    console.log("Updating avatar for user:", id);
+    if (req.user.role !== "admin" && req.user.id !== id) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    console.log("Uploading files");
+    const uploadRes = await streamUpload(req.file.buffer);
+    console.log("Files uploaded successfully:", uploadRes);
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id },
+      { avatarUrl: uploadRes.secure_url },
+      { new: true }
+    );
+    console.log("Get user:", updatedUser);
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
+
+    res
+      .status(200)
+      .json({ message: "Avatar updated successfully", user: updatedUser });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res
+        .status(400)
+        .json({ message: "Invalid data provided", errors: error.errors });
+    }
+    res.status(500).json({ message: "Oops! Something went wrong!" });
+  }
+};
+
+const removeAvatarController = async (req, res) => {
+  try {
+    const { id } = await userIdParamZodSchema.parseAsync(req.params);
+
+    if (req.user.role !== "admin" && req.user.id !== id) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      {
+        _id: id,
+        deletedAt: null,
+      },
+      { avatarUrl: null },
+      { new: true }
+    );
+
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
+
+    res
+      .status(200)
+      .json({ message: "Avatar removed successfully", user: updatedUser });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res
+        .status(400)
+        .json({ message: "Invalid data provided", errors: error.errors });
+    }
+    res.status(500).json({ message: "Oops! Something went wrong!" });
+  }
+};
+
 module.exports = {
   getUserController,
   updateUserController,
   deleteUserController,
   getUserProfileController,
+  updateAvatarController,
+  removeAvatarController,
 };
