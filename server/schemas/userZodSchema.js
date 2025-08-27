@@ -34,6 +34,10 @@ const updateUserZodSchema = z.object({
       message: "Date of birth must be in the past",
     })
     .optional(),
+  phoneNumber: z
+    .string()
+    .regex(/^\+?[1-9]\d{9,14}$/, "Please enter a valid phone number")
+    .optional(),
   avatarUrl: z
     .string()
     .url({ error: "Invalid avatar URL" })
