@@ -1,6 +1,6 @@
 import { DataTable } from '@/components/data-table/data-table';
 import { Button } from '@/components/ui/button';
-import { Eye, Pen, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
@@ -23,7 +23,7 @@ const UserTable = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['users', params],
     queryFn: () => userService.getUsers(params),
-    keepPreviousData: true
+    placeholderData: (previousData) => previousData
   });
 
   const { mutate: deleteUserAccount, isPending: deleting } = useMutation({

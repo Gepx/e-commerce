@@ -36,6 +36,26 @@ class UserService {
       throw new Error(error.response?.data?.message || 'Failed to delete user account!');
     }
   }
+
+  async updateUserAvatar(id, file) {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      const response = await api.put(`/users/${id}/avatar`, formData);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to update user avatar!');
+    }
+  }
+
+  async removeUserAvatar(id) {
+    try {
+      const response = await api.delete(`/users/${id}/avatar`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to remove user avatar!');
+    }
+  }
 }
 
 export default new UserService();
