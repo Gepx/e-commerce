@@ -26,7 +26,7 @@ const profileMenuItems = [
   },
   {
     title: 'Address',
-    url: '/address',
+    url: '/addresses',
     icon: MapPinHouse
   },
   {
@@ -110,25 +110,13 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild>
                       <Link
                         to={item.url}
-                        className={`
-    group flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium
-    transition-colors duration-150 ease-in-out
-    ${
-      location.pathname === item.url
-        ? 'text-gray-900 bg-gray-100 dark:text-white dark:bg-gray-800'
-        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/50'
-    }
-  `}>
+                        className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out ${location.pathname === item.url ? 'text-gray-900 bg-gray-100 dark:text-white dark:bg-gray-800' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/50'}`}>
                         <div
-                          className={`
-    flex items-center justify-center h-6 w-6 rounded-md
-    transition-colors duration-150 ease-in-out
-    ${
-      location.pathname === item.url
-        ? 'bg-blue-500 text-white'
-        : 'bg-gray-200 text-gray-600 group-hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:group-hover:bg-gray-600'
-    }
-  `}>
+                          className={`flex items-center justify-center h-6 w-6 rounded-md transition-colors duration-150 ease-in-out ${
+                            location.pathname === item.url
+                              ? 'bg-blue-500 text-white'
+                              : 'bg-gray-200 text-gray-600 group-hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:group-hover:bg-gray-600'
+                          }`}>
                           <item.icon className="h-4 w-4 flex-shrink-0" />
                         </div>
 
