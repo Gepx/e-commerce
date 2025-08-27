@@ -17,7 +17,7 @@ const MobileNav = () => (
       <span className="font-medium">Notifications</span>
     </Link>
     <Link
-      to="/profile"
+      to="/account"
       className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">
       <CircleUserRound className="w-5 h-5" />
       <span className="font-medium">Profile</span>

@@ -31,7 +31,7 @@ const DesktopNav = () => (
       <NavigationMenuItem>
         <NavigationMenuLink asChild>
           <Link
-            to="/profile"
+            to="/account"
             className="flex items-center gap-2 hover:bg-gray-400/30 p-2 rounded-md transition">
             <CircleUserRound />
             <span>Egip</span>
