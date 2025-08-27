@@ -6,13 +6,13 @@ import AuthLayout from './layouts/AuthLayout';
 import Register from './components/auth/Register';
 import ResetPassword from './components/auth/ResetPassword';
 import Product from './components/product/Product';
-import Profile from './pages/Profile';
 import SidebarLayout from './layouts/SidebarLayout';
 import Address from './components/profile/Address';
 import Dashboard from './pages/admin/Dashboard';
 import AdminLayout from './pages/admin/AdminLayout';
 import ProductTable from './pages/admin/product-management/ProductTable';
 import UserTable from './pages/admin/user-management/UserTable';
+import Profile from './pages/Profile';
 
 export const router = createBrowserRouter([
   {
@@ -33,12 +33,12 @@ export const router = createBrowserRouter([
     ]
   },
   {
-    path: '/profile',
+    path: '/account',
     element: <SidebarLayout />,
     children: [{ index: true, element: <Profile /> }]
   },
   {
-    path: '/address',
+    path: '/addresses',
     element: <SidebarLayout />,
     children: [{ index: true, element: <Address /> }]
   },
