@@ -16,7 +16,8 @@ export function DynamicField({ form, config }) {
                 id={config.name}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={field.value}
-                onChange={field.onChange}>
+                onChange={field.onChange}
+                disabled={config.disabled}>
                 <option value="">{config.placeholder || `Select ${config.label}`}</option>
                 {(config.options || []).map((o) => {
                   const value = o.value || o;
@@ -34,6 +35,7 @@ export function DynamicField({ form, config }) {
                 type={config.type || 'text'}
                 placeholder={config.placeholder || config.label}
                 autoComplete={config.autoComplete}
+                disabled={config.disabled}
                 {...field}
               />
             )}
