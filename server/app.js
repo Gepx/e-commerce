@@ -12,7 +12,7 @@ const AuthRoutes = require("./routes/authRoutes");
 const UserRoutes = require("./routes/userRoutes");
 const ProductRoutes = require("./routes/productRoutes");
 const AddressRoutes = require("./routes/addressRoutes");
-const { authLimiter, limiter } = require("./utils/rateLimiter");
+const { limiter } = require("./utils/rateLimiter");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +27,6 @@ app.use(helmet());
 app.use(cookieParser());
 
 app.use(limiter);
-app.use("/api/auth", authLimiter);
 app.use(morgan("dev"));
 
 connectDB();

@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const AddressController = require("../controllers/addressController");
+const verifyToken = require("../middleware/authMiddleware");
 
-router.get("/", AddressController.getUserAddresses);
-router.post("/", AddressController.addUserAddress);
-router.put("/:id", AddressController.updateUserAddress);
-router.delete("/:id", AddressController.deleteUserAddress);
+router.get("/", verifyToken, AddressController.getUserAddresses);
+router.post("/", verifyToken, AddressController.addUserAddress);
+router.put("/:id", verifyToken, AddressController.updateUserAddress);
+router.delete("/:id", verifyToken, AddressController.deleteUserAddress);
 
 module.exports = router;

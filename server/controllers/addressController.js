@@ -12,13 +12,7 @@ const getUserAddresses = async (req, res) => {
     const { id: userId } = await userIdParamZodSchema.parseAsync({
       id: req.user.id,
     });
-    const userAddresses = await Address.find({ user: userId });
-
-    if (!userAddresses || userAddresses.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No addresses found for this user" });
-    }
+    const userAddresses = await Address.find({ user: userId, deletedAt: null });
 
     res.status(200).json({
       message: "User addresses retrieved successfully",
@@ -42,13 +36,11 @@ const addUserAddress = async (req, res) => {
     });
     const addresses = await createAddressSchema.parseAsync(req.body);
     const newAddress = new Address({ ...addresses, user: userId });
-
     if (!newAddress) {
       return res.status(400).json({ message: "Invalid address data" });
     }
 
     await newAddress.save();
-
     res.status(201).json({
       message: "Address created successfully",
       address: newAddress,
@@ -108,9 +100,7 @@ const deleteUserAddress = async (req, res) => {
     const { id: userId } = await userIdParamZodSchema.parseAsync({
       id: req.user.id,
     });
-    const { id: addressId } = await addressIdParamSchema.parseAsync(
-      req.params.id
-    );
+    const { id: addressId } = await addressIdParamSchema.parseAsync(req.params);
 
     const addressDeleted = await Address.findOneAndUpdate(
       {

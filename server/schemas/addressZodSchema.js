@@ -1,11 +1,7 @@
 const { z } = require("zod");
 
 const baseAddressSchema = {
-  label: z
-    .string({ required_error: "Label is required" })
-    .trim()
-    .min(2, "Label must be at least 2 characters")
-    .max(10, "Label cannot be more than 10 characters"),
+  label: z.string({ required_error: "Label is required" }).trim(),
   recipientName: z
     .string({ required_error: "Recipient name is required" })
     .trim()
