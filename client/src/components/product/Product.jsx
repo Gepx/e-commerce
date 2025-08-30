@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react';
-import data from '@/json/productDummy.json';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -11,12 +10,45 @@ import {
   ShoppingCart,
   Star,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import productService from '@/services/productService';
+import { useParams } from 'react-router-dom';
 
 const Product = () => {
-  const products = data.products;
-  const product = products[0];
+  const [currentImg, setCurrentImg] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
+  const [ratingOpen, setRatingOpen] = useState(true);
+  const [selectedVariants, setSelectedVariants] = useState({});
+  const [activeVariation, setActiveVariation] = useState(null);
+  const { id } = useParams();
+  const visibleCount = 5;
+
+  const {
+    data: products,
+    isLoading,
+    isError
+  } = useQuery({
+    queryKey: ['product', id],
+    queryFn: () => productService.getProductById(id),
+    enabled: !!id
+  });
+
+  const product = products?.product || null;
+  // console.log(product);
+
+  const handlePrev = () => {
+    if (startIndex > 0) setStartIndex(startIndex - 1);
+  };
+
+  const handleNext = () => {
+    if (startIndex + visibleCount < product.productImages.length) setStartIndex(startIndex + 1);
+  };
+
+  const visibleImages = product?.productImages.slice(startIndex, startIndex + visibleCount);
 
   const [qty, setQty] = useState(1);
   const dec = () => setQty((q) => Math.max(1, q - 1));
@@ -29,6 +61,12 @@ const Product = () => {
     { id: 4, title: '5% Cashback', desc: 'Min. Purchase 300k', endsIn: '13 September 2025' },
     { id: 5, title: '5% Cashback', desc: 'Min. Purchase 300k', endsIn: '13 September 2025' }
   ];
+
+  // For Product Specifications => Weight
+  const specValue = (value) =>
+    typeof value === 'object' && value !== null
+      ? `${value?.value ?? '-'} ${value?.unit ?? ''}`.trim()
+      : (value ?? '-');
 
   const reviews = useMemo(
     () => [
@@ -69,8 +107,37 @@ const Product = () => {
       1 * ratingCounts[1]) /
     totalRatings;
 
-  // Filter (rating only)
-  const [ratingOpen, setRatingOpen] = useState(true);
+  useEffect(() => {
+    if (!product?.variants || !product?.variations) return;
+
+    const requiredVariantCount = product.variants.length;
+    const selectedVariantCount = Object.keys(selectedVariants).length;
+
+    if (requiredVariantCount > 0 && requiredVariantCount === selectedVariantCount) {
+      const foundVariation = product.variations.find((variation) => {
+        return Object.entries(selectedVariants).every(([key, value]) => {
+          return variation.attributes[key] === value;
+        });
+      });
+      setActiveVariation(foundVariation || null);
+    } else {
+      setActiveVariation(null);
+    }
+  }, [selectedVariants, product]);
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading product...</div>;
+  }
+
+  if (isError || !product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">Error loading product.</div>
+    );
+  }
+
+  const isPurchasable = product.variants.length === 0 || !!activeVariation;
+  const displayPrice = activeVariation?.price || product.productPrice;
+  const displayStock = activeVariation?.stock ?? product.stock;
 
   return (
     <div className="min-h-screen">
@@ -81,24 +148,46 @@ const Product = () => {
             <div className="lg:col-span-5 flex flex-col gap-3">
               <Card className="p-0 m-0 overflow-hidden aspect-[4/3]">
                 <img
-                  src={product.productImages?.[0] || 'https://picsum.photos/800/600'}
+                  src={product.productImages[currentImg]}
                   alt={product.productName}
                   className="w-full h-full object-cover"
                 />
               </Card>
-              <div className="grid grid-cols-5 gap-3">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Card key={i} className="p-0 m-0 overflow-hidden aspect-square">
-                    <img
-                      src={
-                        product.productImages?.[i % (product.productImages?.length || 1)] ||
-                        'https://picsum.photos/200/200'
-                      }
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  </Card>
-                ))}
+              <div className="relative flex items-center">
+                {startIndex > 0 && (
+                  <Button
+                    onClick={handlePrev}
+                    className="absolute -left-6 z-10 p-2 rounded-full bg-white shadow hover:bg-gray-100 cursor-pointer">
+                    <ChevronLeft className="w-5 h-5" />
+                  </Button>
+                )}
+
+                <div className="grid grid-cols-5 gap-3">
+                  {visibleImages.map((img, i) => (
+                    <Card
+                      key={i + startIndex}
+                      className={`p-0 m-0 overflow-hidden aspect-square  ${
+                        i + startIndex === currentImg
+                          ? 'ring-2 ring-blue-500'
+                          : 'ring-transparent hover:ring-blue-300'
+                      }`}>
+                      <img
+                        src={img}
+                        alt={`Image ${i + startIndex + 1}`}
+                        onClick={() => setCurrentImg(i + startIndex)}
+                        className={'w-full h-full object-cover cursor-pointer'}
+                      />
+                    </Card>
+                  ))}
+                </div>
+
+                {startIndex + visibleCount < product.productImages.length && (
+                  <Button
+                    onClick={handleNext}
+                    className="absolute -right-6 z-10 p-2 rounded-full bg-white shadow hover:bg-gray-100 cursor-pointer">
+                    <ChevronRight className="w-5 h-5" />
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -119,27 +208,34 @@ const Product = () => {
 
               <span className="text-2xl font-semibold">{`Rp${product.productPrice.toLocaleString('id-ID')}`}</span>
 
-              <div className="flex flex-col gap-2">
-                <div className="text-sm text-gray-500">Color</div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {['Blue', 'Red', 'Green', 'Yellow', 'Purple', 'Orange'].map((c) => (
-                    <Button key={c} variant="outline" className="cursor-pointer h-9 px-4">
-                      {c}
-                    </Button>
+              {product.variants && product.variants.length > 0 && (
+                <>
+                  {product.variants.map((variant) => (
+                    <div className="flex flex-col gap-2" key={variant.type}>
+                      <div className="text-sm text-gray-500 capitalize">{variant.type}</div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {variant.options.map((option) => {
+                          const isActive = selectedVariants[variant.type] === option;
+                          return (
+                            <Button
+                              key={option}
+                              variant={isActive ? 'solid' : 'outline'}
+                              className={`cursor-pointer h-9 px-4 ${isActive ? 'bg-green-500 ring-1 ring-blue-500' : ''}`}
+                              onClick={() =>
+                                setSelectedVariants((prev) => ({
+                                  ...prev,
+                                  [variant.type]: option
+                                }))
+                              }>
+                              {option}
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    </div>
                   ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <div className="text-sm text-gray-500">Size</div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {['S', 'M', 'L', 'XL', 'XXL'].map((s) => (
-                    <Button key={s} variant="outline" className="cursor-pointer h-9 px-4">
-                      {s}
-                    </Button>
-                  ))}
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -172,7 +268,6 @@ const Product = () => {
               </div>
             </section>
           )}
-
           {/* Product Details */}
           <div>
             <Card className="shadow-lg h-fit">
@@ -186,26 +281,14 @@ const Product = () => {
                   <div className="bg-gray-50 rounded-lg p-4">
                     <table className="w-full">
                       <tbody>
-                        <tr className="border-b border-gray-200">
-                          <td className="py-2 font-medium text-gray-700 w-1/3">Brand</td>
-                          <td className="py-2 text-gray-600">Samsung</td>
-                        </tr>
-                        <tr className="border-b border-gray-200">
-                          <td className="py-2 font-medium text-gray-700">Weight</td>
-                          <td className="py-2 text-gray-600">500g</td>
-                        </tr>
-                        <tr className="border-b border-gray-200">
-                          <td className="py-2 font-medium text-gray-700">Material</td>
-                          <td className="py-2 text-gray-600">Premium Cotton</td>
-                        </tr>
-                        <tr className="border-b border-gray-200">
-                          <td className="py-2 font-medium text-gray-700">Origin</td>
-                          <td className="py-2 text-gray-600">Indonesia</td>
-                        </tr>
-                        <tr>
-                          <td className="py-2 font-medium text-gray-700">Warranty</td>
-                          <td className="py-2 text-gray-600">1 Year Official</td>
-                        </tr>
+                        {Object.entries(product.productSpecification).map(([key, value]) => (
+                          <tr className="border-b border-gray-200" key={key}>
+                            <td className="py-2 font-medium text-gray-700 w-1/3 capitalize">
+                              {key}
+                            </td>
+                            <td className="py-2 text-gray-600">{specValue(value)}</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
@@ -214,17 +297,7 @@ const Product = () => {
                 {/* Description */}
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
-                  <div className="prose prose-gray max-w-none">
-                    <p className="text-gray-600 leading-relaxed">
-                      {product.productDescription} Lorem ipsum dolor sit amet, consectetur
-                      adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.
-                    </p>
-                    <p className="text-gray-600 leading-relaxed mt-4">
-                      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-                      eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
-                    </p>
-                  </div>
+                  <p className="text-gray-600 leading-relaxed">{product.productDescription}</p>
                 </div>
               </CardContent>
             </Card>
@@ -333,7 +406,7 @@ const Product = () => {
         <div className="lg:col-span-3">
           <Card className="sticky top-24 p-4 flex flex-col gap-3 shadow-lg">
             <p className="text-xl font-semibold">
-              Subtotal: {`Rp${product.productPrice.toLocaleString('id-ID')}`}
+              Subtotal: {`Rp${displayPrice.toLocaleString('id-ID')}`}
             </p>
             <div className="flex items-center gap-3">
               <div className="flex items-center border rounded-md">
@@ -351,11 +424,12 @@ const Product = () => {
                   +
                 </Button>
               </div>
-              <span className="text-sm text-muted-foreground">Stock: 100</span>
+              <span className="text-sm text-muted-foreground">Stock: {displayStock}</span>
             </div>
 
             <Button
               size="lg"
+              disabled={!isPurchasable}
               className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer">
               <ShoppingCart className="w-5 h-5 mr-2" />
               Add to Cart
@@ -363,6 +437,7 @@ const Product = () => {
 
             <Button
               size="lg"
+              disabled={!isPurchasable}
               className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer">
               Buy Now
             </Button>
