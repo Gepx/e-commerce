@@ -12,6 +12,8 @@ const AuthRoutes = require("./routes/authRoutes");
 const UserRoutes = require("./routes/userRoutes");
 const ProductRoutes = require("./routes/productRoutes");
 const AddressRoutes = require("./routes/addressRoutes");
+const CartRoutes = require("./routes/cartRoutes");
+const WishlistRoutes = require("./routes/wishlistRoutes");
 const { limiter } = require("./utils/rateLimiter");
 
 app.use(express.json());
@@ -35,6 +37,8 @@ app.use("/api/auth", AuthRoutes);
 app.use("/api/users", UserRoutes);
 app.use("/api/products", ProductRoutes);
 app.use("/api/user/addresses", AddressRoutes);
+app.use("/api/user/cart", CartRoutes);
+app.use("/api/user/wishlist", WishlistRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
