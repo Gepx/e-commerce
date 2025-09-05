@@ -1,9 +1,15 @@
-import { Bell, CircleUserRound, SearchIcon, ShoppingCart } from 'lucide-react';
+import { Bell, CircleUserRound, Heart, SearchIcon, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Input } from '../ui/input';
 
 const MobileNav = () => (
   <div className="relative flex flex-col md:hidden w-full ">
+    <Link
+      to="/wishlist"
+      className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">
+      <Heart className="w-5 h-5" />
+      <span className="font-medium">Wishlist</span>
+    </Link>
     <Link
       to="/cart"
       className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">

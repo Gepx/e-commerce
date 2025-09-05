@@ -4,12 +4,21 @@ import {
   NavigationMenuLink,
   NavigationMenuList
 } from '@radix-ui/react-navigation-menu';
-import { Bell, CircleUserRound, ShoppingCart } from 'lucide-react';
+import { Bell, CircleUserRound, Heart, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const DesktopNav = () => (
   <NavigationMenu>
     <NavigationMenuList className="hidden md:flex items-center gap-5">
+      <NavigationMenuItem>
+        <NavigationMenuLink asChild>
+          <Link
+            to="/wishlist"
+            className="flex items-center gap-2 hover:bg-gray-400/30 p-2 rounded-md transition">
+            <Heart className="hover:fill-red-700 transition-all duration-200" />
+          </Link>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
       <NavigationMenuItem>
         <NavigationMenuLink asChild>
           <Link
