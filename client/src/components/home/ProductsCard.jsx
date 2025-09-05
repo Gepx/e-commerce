@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import data from '@/json/productDummy.json';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
 import { Input } from '../ui/input';
@@ -53,8 +52,8 @@ const ProductsCard = () => {
         <CardContent className="p-0 flex flex-col gap-4">
           <div>
             <CardTitle className="text-lg font-semibold">Categories</CardTitle>
-            {categories.map((c) => (
-              <div className="flex items-center justify-between" key={c.category}>
+            {categories.map((c, index) => (
+              <div className="flex items-center justify-between" key={index}>
                 <div className="flex items-center gap-2">
                   <Checkbox id={`cat-${c.category}`} className="w-4 h-4" />
                   <label htmlFor={`cat-${c.category}`}>{c.category}</label>
@@ -90,7 +89,6 @@ const ProductsCard = () => {
       </Card>
       <div className="col-span-4 grid grid-cols-2 lg:grid-cols-5 gap-4">
         {paginatedProducts.map((product) => {
-          console.log(product.productImages);
           return (
             <Card
               key={product._id}
