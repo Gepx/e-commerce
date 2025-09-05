@@ -65,6 +65,32 @@ async function addItem(userId, { productId, quantity, selectedVariants = {} }) {
   return updated;
 }
 
+async function updateItem(
+  userId,
+  { productId, quantity, selectedVariants = {} }
+) {
+  const cart = await Cart.findOne({ user: userId });
+  if (!cart) {
+    throw { status: 404, message: "Cart not found" };
+  }
+
+  const selNorm = normalize(selectedVariants);
+  const itemIndex = cart.items.findIndex((item) => {
+    const sameProduct = item.product.toString() === productId;
+    const itemSel = normalize(toPlain(item.selectedVariants));
+    return sameProduct && JSON.stringify(itemSel) === JSON.stringify(selNorm);
+  });
+
+  if (itemIndex === -1) {
+    throw { status: 404, message: "Item not found in cart" };
+  }
+
+  cart.items[itemIndex].quantity = quantity;
+  const updatedCart = await cart.save();
+  await updatedCart.populate("items.product");
+  return updatedCart;
+}
+
 async function removeItem(userId, { productId, selectedVariants = {} }) {
   const cart = await Cart.findOne({ user: userId });
   if (!cart) {
@@ -88,4 +114,4 @@ async function removeItem(userId, { productId, selectedVariants = {} }) {
   return updatedCart;
 }
 
-module.exports = { getCartItems, addItem, removeItem };
+module.exports = { getCartItems, addItem, removeItem, updateItem };
