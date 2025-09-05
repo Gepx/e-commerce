@@ -5,7 +5,9 @@ const wishlistService = require("../services/wishlistService");
 
 const getUserWishList = async (req, res) => {
   try {
-    const userId = await userIdParamZodSchema.parseAsync({ id: req.user.id });
+    const { id: userId } = await userIdParamZodSchema.parseAsync({
+      id: req.user.id,
+    });
     const wishlist = await wishlistService.getWishList(userId);
     res.status(200).json({
       message: "Wishlist retrieved successfully",
@@ -24,20 +26,30 @@ const getUserWishList = async (req, res) => {
 
 const addItemToWishlist = async (req, res) => {
   try {
-    const userId = await userIdParamZodSchema.parseAsync({ id: req.user.id });
+    const { id: userId } = await userIdParamZodSchema.parseAsync({
+      id: req.user.id,
+    });
+
     const {
-      product: productId,
+      productId: productId,
       selectedVariants = {},
       notifyWhenAvailable = false,
     } = await wishlistItemZodSchema.parseAsync(req.body);
-    const wishlist = await wishlistService.addToWishlist(userId, {
-      productId,
+
+    const addedWishlist = await wishlistService.addToWishlist(userId, {
+      productId: productId,
       selectedVariants,
       notifyWhenAvailable,
     });
+
+    const message = addedWishlist.updated
+      ? "Item successfully updated in wishlist"
+      : "Item successfully added to wishlist";
+
     res.status(200).json({
-      message: "Item successfully added to wishlist",
-      wishlist,
+      message,
+      wishlist: addedWishlist.wishlist,
+      updated: addedWishlist.updated,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -52,8 +64,10 @@ const addItemToWishlist = async (req, res) => {
 
 const removeItemFromWishlist = async (req, res) => {
   try {
-    const userId = await userIdParamZodSchema.parseAsync({ id: req.user.id });
-    const { product: productId, selectedVariants = {} } =
+    const { id: userId } = await userIdParamZodSchema.parseAsync({
+      id: req.user.id,
+    });
+    const { productId: productId, selectedVariants = {} } =
       await wishlistItemZodSchema.parseAsync(req.body);
     const wishlist = await wishlistService.removeFromWishlist(userId, {
       productId,
