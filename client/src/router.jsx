@@ -14,6 +14,7 @@ import ProductTable from './pages/admin/product-management/ProductTable';
 import UserTable from './pages/admin/user-management/UserTable';
 import Profile from './pages/Profile';
 import Cart from './pages/Cart';
+import Wishlist from './pages/Wishlist';
 
 export const router = createBrowserRouter([
   {
@@ -22,7 +23,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: '/product/:id', element: <Product /> },
-      { path: '/cart', element: <Cart /> }
+      { path: '/cart', element: <Cart /> },
+      { path: '/wishlist', element: <Wishlist /> }
     ]
   },
   {
