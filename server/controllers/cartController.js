@@ -1,4 +1,7 @@
-const cartItemZodSchema = require("../schemas/cartZodSchema");
+const {
+  cartItemZodSchema,
+  removeCartItemZodSchema,
+} = require("../schemas/cartZodSchema");
 const { userIdParamZodSchema } = require("../schemas/userZodSchema");
 const { z } = require("zod");
 const cartService = require("../services/cartService");
@@ -6,7 +9,7 @@ const cartService = require("../services/cartService");
 const getUserCart = async (req, res) => {
   try {
     const { id: userId } = userIdParamZodSchema.parse({ id: req.user.id });
-    const cart = await cartService.getOrCreateCart(userId);
+    const cart = await cartService.getCartItems(userId);
     return res.status(200).json({
       message: "Cart retrieved successfully",
       cart,
@@ -25,14 +28,15 @@ const getUserCart = async (req, res) => {
 const addItemToCart = async (req, res) => {
   try {
     const { id: userId } = userIdParamZodSchema.parse({ id: req.user.id });
+
     const {
-      product: productId,
+      productId: productId,
       quantity,
       selectedVariants = {},
     } = await cartItemZodSchema.parseAsync(req.body);
 
     const cart = await cartService.addItem(userId, {
-      productId,
+      productId: productId,
       quantity,
       selectedVariants,
     });
@@ -55,14 +59,44 @@ const addItemToCart = async (req, res) => {
   }
 };
 
+const updateCartItem = async (req, res) => {
+  try {
+    const { id: userId } = userIdParamZodSchema.parse({ id: req.user.id });
+    const {
+      productId,
+      quantity,
+      selectedVariants = {},
+    } = await cartItemZodSchema.parseAsync(req.body);
+    const cart = await cartService.updateItem(userId, {
+      productId,
+      quantity,
+      selectedVariants,
+    });
+    return res
+      .status(200)
+      .json({ message: "Item successfully updated in cart", cart });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Invalid data provided",
+        errors: error.errors,
+      });
+    }
+    res.status(500).json({ message: "Oops! Something went wrong!" });
+  }
+};
+
 const removeCartItem = async (req, res) => {
   try {
-    const userId = await userIdParamZodSchema.parseAsync({ id: req.user.id });
-    const { product: productId, selectedVariants = {} } =
-      await cartItemZodSchema.parseAsync(req.body);
+    const { id: userId } = await userIdParamZodSchema.parseAsync({
+      id: req.user.id,
+    });
+
+    const { productId, selectedVariants = {} } =
+      await removeCartItemZodSchema.parseAsync(req.body);
 
     const cart = await cartService.removeItem(userId, {
-      productId,
+      productId: productId,
       selectedVariants,
     });
 
@@ -85,4 +119,5 @@ module.exports = {
   getUserCart,
   addItemToCart,
   removeCartItem,
+  updateCartItem,
 };
