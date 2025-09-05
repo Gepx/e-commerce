@@ -14,12 +14,13 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import productService from '@/services/productService';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import cartService from '@/services/cartService';
 import { useAuth } from '@/context/AuthContext';
+import cartService from '@/services/cartService';
+import wishlistService from '@/services/wishlistService';
 
 const Product = () => {
   const [currentImg, setCurrentImg] = useState(0);
@@ -28,10 +29,18 @@ const Product = () => {
   const [selectedVariants, setSelectedVariants] = useState({});
   const [activeVariation, setActiveVariation] = useState(null);
   const { id } = useParams();
+  const location = useLocation();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const userId = user?._id;
   const visibleCount = 5;
+
+  useEffect(() => {
+    if (location.state?.selectedVariants) {
+      setSelectedVariants(location.state.selectedVariants);
+    }
+  }, [location.state?.selectedVariants]);
 
   const {
     data: products,
@@ -46,10 +55,22 @@ const Product = () => {
   const { mutate: addItemToCart, isPending: adding } = useMutation({
     mutationFn: (item) => cartService.addItemToCart(item),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
       toast.success('Item added to cart successfully.');
     },
     onError: (err) => {
       toast.error(err?.message || 'Failed to add item to cart.');
+    }
+  });
+
+  const { mutate: addItemToWishlist, isPending: addingToWishlist } = useMutation({
+    mutationFn: (item) => wishlistService.addItemToWishlist(item),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+      toast.success('Item added to wishlist successfully.');
+    },
+    onError: (err) => {
+      toast.error(err?.message || 'Failed to add item to wishlist.');
     }
   });
 
@@ -470,9 +491,21 @@ const Product = () => {
             <Button
               size="lg"
               variant="outline"
-              className="w-full border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-semibold transition-all duration-200 cursor-pointer">
+              className="w-full border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-semibold transition-all duration-200 cursor-pointer"
+              onClick={() =>
+                addItemToWishlist({
+                  productId: product._id.toString(),
+                  selectedVariants: selectedVariants
+                })
+              }>
+              {console.log('Wishlist Item', {
+                userId: userId,
+                productId: product._id.toString(),
+                selectedVariants: selectedVariants
+              })}
+              {console.log(typeof userId, typeof product._id.toString(), typeof selectedVariants)}
               <Heart className="w-5 h-5 mr-2" />
-              Add to Wishlist
+              {addingToWishlist ? 'Adding...' : 'Add to Wishlist'}
             </Button>
           </Card>
         </div>
