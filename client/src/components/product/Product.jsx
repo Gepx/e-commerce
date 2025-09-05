@@ -14,9 +14,12 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import productService from '@/services/productService';
 import { useParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import cartService from '@/services/cartService';
+import { useAuth } from '@/context/AuthContext';
 
 const Product = () => {
   const [currentImg, setCurrentImg] = useState(0);
@@ -25,6 +28,9 @@ const Product = () => {
   const [selectedVariants, setSelectedVariants] = useState({});
   const [activeVariation, setActiveVariation] = useState(null);
   const { id } = useParams();
+  const { user } = useAuth();
+
+  const userId = user?._id;
   const visibleCount = 5;
 
   const {
@@ -35,6 +41,16 @@ const Product = () => {
     queryKey: ['product', id],
     queryFn: () => productService.getProductById(id),
     enabled: !!id
+  });
+
+  const { mutate: addItemToCart, isPending: adding } = useMutation({
+    mutationFn: (item) => cartService.addItemToCart(item),
+    onSuccess: () => {
+      toast.success('Item added to cart successfully.');
+    },
+    onError: (err) => {
+      toast.error(err?.message || 'Failed to add item to cart.');
+    }
   });
 
   const product = products?.product || null;
@@ -430,9 +446,18 @@ const Product = () => {
             <Button
               size="lg"
               disabled={!isPurchasable}
-              className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer">
+              className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
+              onClick={() =>
+                addItemToCart({
+                  userId: userId,
+                  productId: product._id.toString(),
+                  quantity: qty,
+                  selectedVariants: selectedVariants,
+                  price: displayPrice
+                })
+              }>
               <ShoppingCart className="w-5 h-5 mr-2" />
-              Add to Cart
+              {adding ? 'Adding...' : 'Add to Cart'}
             </Button>
 
             <Button
