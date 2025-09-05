@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import cartService from '@/services/cartService';
 import { Loader2 } from 'lucide-react';
-import { TableBody, TableCell, TableRow } from '@/components/ui/table';
 
 const Cart = () => {
   const [selectedItems, setSelectedItems] = useState([]);
