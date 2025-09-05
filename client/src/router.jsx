@@ -13,6 +13,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import ProductTable from './pages/admin/product-management/ProductTable';
 import UserTable from './pages/admin/user-management/UserTable';
 import Profile from './pages/Profile';
+import Cart from './pages/Cart';
 
 export const router = createBrowserRouter([
   {
@@ -20,7 +21,8 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <Home /> },
-      { path: '/product/:id', element: <Product /> }
+      { path: '/product/:id', element: <Product /> },
+      { path: '/cart', element: <Cart /> }
     ]
   },
   {
