@@ -1,8 +1,9 @@
-const express = require("express");
-const verifyToken = require("../middleware/authMiddleware");
-const UserController = require("../controllers/userController");
-const authorizeRoles = require("../middleware/roleMiddleware");
-const upload = require("../config/multer");
+import express from "express";
+import verifyToken from "../middleware/auth/authMiddleware.js";
+import UserController from "../controllers/userController.js";
+import authorizeRoles from "../middleware/auth/roleMiddleware.js";
+import upload from "../config/multer.js";
+
 const router = express.Router();
 
 router.get(
@@ -38,4 +39,4 @@ router.delete(
   UserController.removeAvatarController
 );
 
-module.exports = router;
+export default router;

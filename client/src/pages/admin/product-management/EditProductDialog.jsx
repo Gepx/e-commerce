@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
-import useProductForm from '@/hooks/useProductForm';
+import useProductForm from '@/components/features/products/hooks/useProductForm';
 import { Pen } from 'lucide-react';
 
 import ProductImagesInput from './components/ProductImagesInput';

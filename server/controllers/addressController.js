@@ -1,11 +1,11 @@
-const {
+import {
   createAddressSchema,
   updateAddressSchema,
   addressIdParamSchema,
-} = require("../schemas/addressZodSchema");
-const { userIdParamZodSchema } = require("../schemas/userZodSchema");
-const Address = require("../models/addressModel");
-const { z } = require("zod");
+} from "../schemas/addressZodSchema.js";
+import { userIdParamZodSchema } from "../schemas/userZodSchema.js";
+import Address from "../models/addressModel.js";
+import { z } from "zod";
 
 const getUserAddresses = async (req, res) => {
   try {
@@ -132,7 +132,7 @@ const deleteUserAddress = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   getUserAddresses,
   addUserAddress,
   updateUserAddress,

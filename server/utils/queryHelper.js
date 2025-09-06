@@ -50,4 +50,4 @@ function createQueryParams(searchParams, type = "generic") {
   return conditions;
 }
 
-module.exports = createQueryParams;
+export default createQueryParams;

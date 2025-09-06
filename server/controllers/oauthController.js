@@ -1,20 +1,20 @@
-const providers = require("../services/oauth/providerFactory");
-const {
+import providers from "../services/oauth/providerFactory.js";
+import {
   clearOAuthState,
   setOAuthState,
   validateOAuthState,
-} = require("../services/oauth/stateService");
-const { issue, setAuthCookie } = require("../services/tokenService");
-const { upsertOAuthUser } = require("../services/userServices");
+} from "../services/oauth/stateService.js";
+import { issue, setAuthCookie } from "../services/tokenService.js";
+import { upsertOAuthUser } from "../services/userServices.js";
 
-module.exports.redirect = async (req, res) => {
+const redirect = async (req, res) => {
   const provider = providers.get(req.params.provider);
   if (!provider) return res.status(404).send("Provider not found");
   const state = await setOAuthState(res);
   return res.redirect(provider.getAuthorizedUrl(state));
 };
 
-module.exports.callback = async (req, res) => {
+const callback = async (req, res) => {
   try {
     const provider = providers.get(req.params.provider);
     if (!provider) return res.status(404).send("Provider not found");
@@ -41,4 +41,9 @@ module.exports.callback = async (req, res) => {
       }/auth/error?message=oauth_failed`
     );
   }
+};
+
+export default {
+  redirect,
+  callback,
 };

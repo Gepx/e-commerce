@@ -1,20 +1,21 @@
-require("dotenv").config();
+import "dotenv/config";
 
-const express = require("express");
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import connectDB from "./config/db.js";
+
+import AuthRoutes from "./routes/authRoutes.js";
+import UserRoutes from "./routes/userRoutes.js";
+import ProductRoutes from "./routes/productRoutes.js";
+import AddressRoutes from "./routes/addressRoutes.js";
+import CartRoutes from "./routes/cartRoutes.js";
+import WishlistRoutes from "./routes/wishlistRoutes.js";
+import { limiter } from "./utils/rateLimiter.js";
+
 const app = express();
-const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
-const connectDB = require("./config/db");
-
-const AuthRoutes = require("./routes/authRoutes");
-const UserRoutes = require("./routes/userRoutes");
-const ProductRoutes = require("./routes/productRoutes");
-const AddressRoutes = require("./routes/addressRoutes");
-const CartRoutes = require("./routes/cartRoutes");
-const WishlistRoutes = require("./routes/wishlistRoutes");
-const { limiter } = require("./utils/rateLimiter");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

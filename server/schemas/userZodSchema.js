@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const updateUserZodSchema = z.object({
   username: z
@@ -55,8 +55,4 @@ const queryParamZodSchema = z.object({
   page: z.coerce.number().int().positive().optional(),
 });
 
-module.exports = {
-  updateUserZodSchema,
-  userIdParamZodSchema,
-  queryParamZodSchema,
-};
+export { updateUserZodSchema, userIdParamZodSchema, queryParamZodSchema };

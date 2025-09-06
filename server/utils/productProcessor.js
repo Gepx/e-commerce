@@ -1,4 +1,4 @@
-const streamUpload = require("../config/cloudinary");
+import streamUpload from "../config/cloudinary.js";
 
 const parseData = async (body, files) => {
   const data = { ...body };
@@ -70,4 +70,4 @@ const parseData = async (body, files) => {
   return data;
 };
 
-module.exports = parseData;
+export default parseData;

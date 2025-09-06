@@ -1,5 +1,3 @@
-// components/dialogs/DetailUserDialog.js
-
 import {
   Dialog,
   DialogContent,
@@ -18,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Eye, User } from 'lucide-react';
 import { useState } from 'react';
-import InfoField from '@/components/info-field/InfoField';
+import InfoField from '@/components/common/info-field/InfoField';
 
 const DetailUserDialog = ({ user }) => {
   const [open, setOpen] = useState(false);

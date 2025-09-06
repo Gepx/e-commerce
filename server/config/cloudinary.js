@@ -1,6 +1,6 @@
-require("dotenv").config();
-const cloudinary = require("cloudinary").v2;
-const streamifier = require("streamifier");
+import "dotenv/config";
+import cloudinary from "cloudinary";
+import streamifier from "streamifier";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -25,4 +25,4 @@ const streamUpload = (fileBuffer) => {
   });
 };
 
-module.exports = streamUpload;
+export default streamUpload;

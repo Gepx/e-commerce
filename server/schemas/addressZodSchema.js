@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const baseAddressSchema = {
   label: z.string({ required_error: "Label is required" }).trim(),
@@ -49,8 +49,4 @@ const addressIdParamSchema = z.object({
   id: z.string({ error: "Invalid address ID format" }),
 });
 
-module.exports = {
-  createAddressSchema,
-  updateAddressSchema,
-  addressIdParamSchema,
-};
+export { createAddressSchema, updateAddressSchema, addressIdParamSchema };

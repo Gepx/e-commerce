@@ -1,14 +1,14 @@
-import { DataTable } from '@/components/data-table/data-table';
+import { DataTable } from '@/components/common/DataTable';
 import { Button } from '@/components/ui/button';
 import { Eye, Pen, Trash2 } from 'lucide-react';
 import { useMemo, memo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import productService from '@/services/productService';
+import productService from '@/components/features/products/services/productService';
 import Loading from '../loading';
 import AddProductDialog from './AddProductDialog';
-import DeleteWrapper from '@/components/alert-wrapper/delete-wrapper';
+import DeleteWrapper from '@/components/common/alert-wrapper/delete-wrapper';
 import EditProductDialog from './EditProductDialog';
 import DetailProductDialog from './DetailProductDialog';
 

@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const variantZodSchema = z.object({
   type: z.enum(["color", "size"]),
@@ -60,8 +60,4 @@ const queryParamZodSchema = z.object({
   page: z.coerce.number().int().positive().optional(),
 });
 
-module.exports = {
-  productZodSchema,
-  productIdZodSchema,
-  queryParamZodSchema,
-};
+export { productZodSchema, productIdZodSchema, queryParamZodSchema };

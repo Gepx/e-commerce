@@ -1,6 +1,6 @@
-const User = require("../models/userModel");
+import User from "../models/userModel.js";
 
-module.exports.upsertOAuthUser = async (profile) => {
+export const upsertOAuthUser = async (profile) => {
   let user = await User.findOne({
     $or: [
       { provider: profile.provider, providerId: String(profile.providerId) },

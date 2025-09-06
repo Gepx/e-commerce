@@ -1,6 +1,6 @@
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/sidebar/app-sidebar';
-import AlertWrapper from '@/components/alert-wrapper/alert-wrapper';
+import { AppSidebar } from '@/components/common/sidebar/app-sidebar';
+import AlertWrapper from '@/components/common/alert-wrapper/alert-wrapper';
 import { useAuth } from '@/context/AuthContext';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';

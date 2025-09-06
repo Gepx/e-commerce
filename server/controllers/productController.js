@@ -1,12 +1,12 @@
-const Product = require("../models/productModel");
-const {
+import Product from "../models/productModel.js";
+import {
   productZodSchema,
   productIdZodSchema,
   queryParamZodSchema,
-} = require("../schemas/productZodSchema");
-const createQueryParams = require("../utils/queryHelper");
-const { z } = require("zod");
-const parseData = require("../utils/productProcessor");
+} from "../schemas/productZodSchema.js";
+import createQueryParams from "../utils/queryHelper.js";
+import { z } from "zod";
+import parseData from "../utils/productProcessor.js";
 
 const getAllProducts = async (req, res) => {
   try {
@@ -151,7 +151,7 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   getAllProducts,
   getProductById,
   createProduct,

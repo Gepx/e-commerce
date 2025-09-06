@@ -1,6 +1,7 @@
-const express = require("express");
-const ProductController = require("../controllers/productController");
-const upload = require("../config/multer");
+import express from "express";
+import ProductController from "../controllers/productController.js";
+import upload from "../config/multer.js";
+
 const router = express.Router();
 
 router.get("/", ProductController.getAllProducts);
@@ -17,4 +18,4 @@ router.put(
 );
 router.delete("/:id", ProductController.deleteProduct);
 
-module.exports = router;
+export default router;

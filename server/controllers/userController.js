@@ -1,12 +1,12 @@
-const { z } = require("zod");
-const User = require("../models/userModel");
-const {
+import { z } from "zod";
+import User from "../models/userModel.js";
+import {
   userIdParamZodSchema,
   updateUserZodSchema,
   queryParamZodSchema,
-} = require("../schemas/userZodSchema");
-const createQueryParams = require("../utils/queryHelper");
-const streamUpload = require("../config/cloudinary");
+} from "../schemas/userZodSchema.js";
+import createQueryParams from "../utils/queryHelper.js";
+import streamUpload from "../config/cloudinary.js";
 
 const getUserController = async (req, res) => {
   try {
@@ -140,19 +140,19 @@ const getUserProfileController = async (req, res) => {
 const updateAvatarController = async (req, res) => {
   try {
     const { id } = await userIdParamZodSchema.parseAsync(req.params);
-    console.log("Updating avatar for user:", id);
+
     if (req.user.role !== "admin" && req.user.id !== id) {
       return res.status(403).json({ message: "Access denied" });
     }
-    console.log("Uploading files");
+
     const uploadRes = await streamUpload(req.file.buffer);
-    console.log("Files uploaded successfully:", uploadRes);
+
     const updatedUser = await User.findOneAndUpdate(
       { _id: id },
       { avatarUrl: uploadRes.secure_url },
       { new: true }
     );
-    console.log("Get user:", updatedUser);
+
     if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
 
@@ -202,7 +202,7 @@ const removeAvatarController = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   getUserController,
   updateUserController,
   deleteUserController,

@@ -1,5 +1,5 @@
-const Cart = require("../models/cartModel");
-const Product = require("../models/productModel");
+import Cart from "../models/cartModel.js";
+import Product from "../models/productModel.js";
 
 const toPlain = (m) => {
   if (!m) return {};
@@ -114,4 +114,4 @@ async function removeItem(userId, { productId, selectedVariants = {} }) {
   return updatedCart;
 }
 
-module.exports = { getCartItems, addItem, removeItem, updateItem };
+export default { getCartItems, addItem, removeItem, updateItem };

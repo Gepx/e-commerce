@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
-module.exports.issue = function issue(user) {
+export const issue = function issue(user) {
   return jwt.sign(
     {
       id: user._id,
@@ -12,7 +12,7 @@ module.exports.issue = function issue(user) {
   );
 };
 
-module.exports.setAuthCookie = function setAuthCookie(res, token) {
+export const setAuthCookie = function setAuthCookie(res, token) {
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

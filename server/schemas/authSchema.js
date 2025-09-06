@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const registerSchema = z.object({
   username: z
@@ -57,7 +57,9 @@ const verifyOtpSchema = z.object({
   email: z.string().email({
     error: "Please enter a valid email address",
   }),
-  otp: z.string().min(6).max(6),
+  otp: z.string().min(6).max(6, {
+    error: "OTP must be 6 digits",
+  }),
 });
 
 const resetPasswordSchema = z.object({
@@ -80,16 +82,25 @@ const resetPasswordSchema = z.object({
 const oauthProfileSchema = z.object({
   provider: z.enum(["google", "github"]),
   providerId: z.string().min(1),
-  email: z.string().email(),
+  email: z.string().email({
+    error: "Please enter a valid email address",
+  }),
   username: z.string().min(1),
   avatarUrl: z.string().url().nullable(),
 });
 
-module.exports = {
+const emailOnlySchema = z.object({
+  email: z.string().email({
+    error: "Please enter a valid email address",
+  }),
+});
+
+export {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
   verifyOtpSchema,
   resetPasswordSchema,
   oauthProfileSchema,
+  emailOnlySchema,
 };

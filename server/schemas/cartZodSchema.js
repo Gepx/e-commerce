@@ -1,5 +1,5 @@
-const { z } = require("zod");
-const mongoose = require("mongoose");
+import { z } from "zod";
+import mongoose from "mongoose";
 
 const cartItemZodSchema = z.object({
   productId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
@@ -16,7 +16,4 @@ const removeCartItemZodSchema = z.object({
   selectedVariants: z.record(z.string()).default({}),
 });
 
-module.exports = {
-  cartItemZodSchema,
-  removeCartItemZodSchema,
-};
+export { cartItemZodSchema, removeCartItemZodSchema };

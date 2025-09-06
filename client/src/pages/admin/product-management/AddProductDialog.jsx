@@ -22,7 +22,7 @@ import ProductImagesInput from './components/ProductImagesInput';
 import ProductSpecifications from './components/ProductSpecifications';
 import ProductCategories from './components/ProductCategories';
 import ProductVariants from './components/ProductVariants';
-import useProductForm from '@/hooks/useProductForm';
+import useProductForm from '@/components/features/products/hooks/useProductForm';
 
 const AddProductDialog = () => {
   const [open, setOpen] = useState(false);

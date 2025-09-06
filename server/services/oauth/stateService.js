@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+import bcrypt from "bcryptjs";
 
 async function setOAuthState(res) {
   const state = await bcrypt.hash(
@@ -24,4 +24,4 @@ function clearOAuthState(res) {
   res.clearCookie("oauth_state");
 }
 
-module.exports = { setOAuthState, validateOAuthState, clearOAuthState };
+export { setOAuthState, validateOAuthState, clearOAuthState };

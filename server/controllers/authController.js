@@ -1,8 +1,8 @@
-const User = require("../models/userModel");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import User from "../models/userModel.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-module.exports.register = async (req, res) => {
+const register = async (req, res) => {
   try {
     const { username, email, password, role } = req.validatedData;
 
@@ -36,7 +36,7 @@ module.exports.register = async (req, res) => {
   }
 };
 
-module.exports.login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.validatedData;
     const user = await User.findOne({ email, deletedAt: null });
@@ -79,7 +79,7 @@ module.exports.login = async (req, res) => {
   }
 };
 
-module.exports.logout = async (req, res) => {
+const logout = async (req, res) => {
   try {
     res.clearCookie("token");
     res.status(200).json({ message: "Logged out successfully" });
@@ -88,7 +88,7 @@ module.exports.logout = async (req, res) => {
   }
 };
 
-module.exports.me = async (req, res) => {
+const me = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).where({ deletedAt: null });
     if (!user) {
@@ -102,7 +102,7 @@ module.exports.me = async (req, res) => {
   }
 };
 
-module.exports.forgotPassword = async (req, res) => {
+const forgotPassword = async (req, res) => {
   try {
     const { email } = req.validatedData;
     const user = await User.findOne({ email, deletedAt: null });
@@ -135,7 +135,7 @@ module.exports.forgotPassword = async (req, res) => {
   }
 };
 
-module.exports.verifyOtp = async (req, res) => {
+const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.validatedData;
     const user = await User.findOne({ email, deletedAt: null });
@@ -169,7 +169,7 @@ module.exports.verifyOtp = async (req, res) => {
   }
 };
 
-module.exports.resetPassword = async (req, res) => {
+const resetPassword = async (req, res) => {
   try {
     const { token, newPassword } = req.validatedData;
     let payload;
@@ -202,4 +202,14 @@ module.exports.resetPassword = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+export default {
+  register,
+  login,
+  logout,
+  me,
+  forgotPassword,
+  verifyOtp,
+  resetPassword,
 };

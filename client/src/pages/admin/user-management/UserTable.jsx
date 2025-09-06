@@ -1,4 +1,4 @@
-import { DataTable } from '@/components/data-table/data-table';
+import { DataTable } from '@/components/common/DataTable';
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 import { useMemo } from 'react';
@@ -6,8 +6,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import Loading from '../loading';
-import userService from '@/services/userService';
-import DeleteWrapper from '@/components/alert-wrapper/delete-wrapper';
+import userService from '@/components/features/profile/services/userService';
+import DeleteWrapper from '@/components/common/alert-wrapper/delete-wrapper';
 import DetailUserDialog from './DetailUserDialog';
 
 const UserTable = () => {

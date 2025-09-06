@@ -1,11 +1,12 @@
-const express = require("express");
+import express from "express";
+import AddressController from "../controllers/addressController.js";
+import verifyToken from "../middleware/auth/authMiddleware.js";
+
 const router = express.Router();
-const AddressController = require("../controllers/addressController");
-const verifyToken = require("../middleware/authMiddleware");
 
 router.get("/", verifyToken, AddressController.getUserAddresses);
 router.post("/", verifyToken, AddressController.addUserAddress);
 router.put("/:id", verifyToken, AddressController.updateUserAddress);
 router.delete("/:id", verifyToken, AddressController.deleteUserAddress);
 
-module.exports = router;
+export default router;

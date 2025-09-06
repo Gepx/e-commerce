@@ -1,8 +1,8 @@
-import CartItem from '@/components/cart/CartItem';
-import CartSummary from '@/components/cart/CartSummary';
+import CartItem from '@/components/features/cart/components/CartItem';
+import CartSummary from '@/components/features/cart/components/CartSummary';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import cartService from '@/services/cartService';
+import cartService from '@/components/features/cart/services/cartService';
 import { Loader2 } from 'lucide-react';
 
 const Cart = () => {

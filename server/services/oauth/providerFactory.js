@@ -1,8 +1,9 @@
-const github = require("./provider/github");
-const google = require("./provider/google");
+import github from "./provider/github.js";
+import google from "./provider/google.js";
 
-const providers = { github, google };
+const providers = new Map();
 
-module.exports.get = function get(name) {
-  return providers[name];
-};
+providers.set("github", github);
+providers.set("google", google);
+
+export default providers;

@@ -1,7 +1,7 @@
-const { z } = require("zod");
-const { userIdParamZodSchema } = require("../schemas/userZodSchema");
-const wishlistItemZodSchema = require("../schemas/wishlistZodSchema");
-const wishlistService = require("../services/wishlistService");
+import { z } from "zod";
+import { userIdParamZodSchema } from "../schemas/userZodSchema.js";
+import { wishlistItemZodSchema } from "../schemas/wishlistZodSchema.js";
+import wishlistService from "../services/wishlistService.js";
 
 const getUserWishList = async (req, res) => {
   try {
@@ -88,7 +88,7 @@ const removeItemFromWishlist = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   getUserWishList,
   addItemToWishlist,
   removeItemFromWishlist,

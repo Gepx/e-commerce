@@ -1,5 +1,5 @@
-const Product = require("../models/productModel");
-const WishList = require("../models/wishlistModel");
+import Product from "../models/productModel.js";
+import WishList from "../models/wishlistModel.js";
 
 async function getWishList(userId) {
   const wishlist = await WishList.findOne({ user: userId }).populate(
@@ -66,4 +66,4 @@ async function removeFromWishlist(userId, { productId }) {
   return updatedWishlist;
 }
 
-module.exports = { getWishList, addToWishlist, removeFromWishlist };
+export default { getWishList, addToWishlist, removeFromWishlist };

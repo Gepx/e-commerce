@@ -1,5 +1,5 @@
-const { z } = require("zod");
-const mongoose = require("mongoose");
+import { z } from "zod";
+import mongoose from "mongoose";
 
 const wishlistItemZodSchema = z.object({
   productId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val)),
@@ -7,4 +7,4 @@ const wishlistItemZodSchema = z.object({
   notifyWhenAvailable: z.boolean().optional().default(false),
 });
 
-module.exports = wishlistItemZodSchema;
+export { wishlistItemZodSchema };

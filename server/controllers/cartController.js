@@ -1,10 +1,10 @@
-const {
+import {
   cartItemZodSchema,
   removeCartItemZodSchema,
-} = require("../schemas/cartZodSchema");
-const { userIdParamZodSchema } = require("../schemas/userZodSchema");
-const { z } = require("zod");
-const cartService = require("../services/cartService");
+} from "../schemas/cartZodSchema.js";
+import { userIdParamZodSchema } from "../schemas/userZodSchema.js";
+import { z } from "zod";
+import cartService from "../services/cartService.js";
 
 const getUserCart = async (req, res) => {
   try {
@@ -115,7 +115,7 @@ const removeCartItem = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   getUserCart,
   addItemToCart,
   removeCartItem,

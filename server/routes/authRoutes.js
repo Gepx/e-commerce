@@ -1,17 +1,18 @@
-const express = require("express");
-const router = express.Router();
-const AuthController = require("../controllers/authController");
-const OAuthController = require("../controllers/oauthController");
-const { validateSchema } = require("../utils/validateSchema");
-const {
+import express from "express";
+import OAuthController from "../controllers/oauthController.js";
+import AuthController from "../controllers/authController.js";
+import { validateSchema } from "../middleware/validation/validateSchema.js";
+import verifyToken from "../middleware/auth/authMiddleware.js";
+import {
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
   verifyOtpSchema,
-} = require("../schemas/authSchema");
-const verifyToken = require("../middleware/authMiddleware");
-const { authLimiter } = require("../utils/rateLimiter");
+} from "../schemas/authSchema.js";
+import { authLimiter } from "../utils/rateLimiter.js";
+
+const router = express.Router();
 
 router.post(
   "/register",
@@ -53,4 +54,4 @@ router.post(
 router.get("/:provider", OAuthController.redirect);
 router.get("/:provider/callback", OAuthController.callback);
 
-module.exports = router;
+export default router;

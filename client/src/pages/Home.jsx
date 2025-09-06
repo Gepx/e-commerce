@@ -1,6 +1,6 @@
 import React from 'react';
 import Banner from '@/components/home/banner';
-import ProductsCard from '@/components/home/ProductsCard';
+import ProductsCard from '@/components/features/products/components/ProductsCard';
 import Footer from '@/components/home/Footer';
 
 const Home = () => {
