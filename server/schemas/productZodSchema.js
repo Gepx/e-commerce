@@ -33,13 +33,13 @@ const productZodSchema = z.object({
     .min(1, "At least one product category is required."),
   variants: z.array(variantZodSchema).optional().default([]),
   variations: z.array(variationZodSchema).optional().default([]),
-  productPrice: z.number().nonnegative(),
-  stock: z.number().nonnegative().default(0),
+  productPrice: z.coerce.number().nonnegative(),
+  stock: z.coerce.number().nonnegative().default(0),
   reviews: z
     .array(
       z.object({
         user: z.string(),
-        rating: z.number().min(0).max(5).optional(),
+        rating: z.coerce.number().min(0).max(5).optional(),
         comment: z.string().min(2).max(1000).optional(),
       })
     )

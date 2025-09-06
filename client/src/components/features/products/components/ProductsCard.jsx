@@ -33,9 +33,11 @@ const ProductsCard = () => {
     return productList.slice(startPage, startPage + pageSize);
   }, [productList, currentPage]);
 
-  const uniqueCategories = [...new Set(productList.map((product) => product.productCategory))];
+  const allCategories = productList.flatMap((product) => product.productCategory);
+  const uniqueCategories = [...new Set(allCategories)];
+
   const categories = uniqueCategories.map((category) => {
-    const count = productList.filter((p) => p.productCategory === category).length;
+    const count = productList.filter((p) => p.productCategory.includes(category)).length;
     return { category, count };
   });
 

@@ -1,6 +1,16 @@
 import streamUpload from "../config/cloudinary.js";
 
-const parseData = async (body, files) => {
+export const uploadNewImages = async (files) => {
+  if (!files || files.length === 0) {
+    return [];
+  }
+  const uploadResults = await Promise.all(
+    files.map((file) => streamUpload(file.buffer))
+  );
+  return uploadResults.map((res) => res.secure_url);
+};
+
+export const parseBodyFields = async (body) => {
   const data = { ...body };
 
   const fieldsToParse = [
@@ -9,24 +19,14 @@ const parseData = async (body, files) => {
     "variations",
     "productCategory",
     "reviews",
-    "existingImages",
+    "removedImages",
   ];
 
   for (const field of fieldsToParse) {
-    if (data[field]) {
-      if (Array.isArray(data[field])) {
-        data[field] = data[field].flatMap((val) => {
-          try {
-            return JSON.parse(val);
-          } catch {
-            return [];
-          }
-        });
-      } else if (typeof data[field] === "string") {
-        try {
-          data[field] = JSON.parse(data[field]);
-        } catch {}
-      }
+    if (data[field] && typeof data[field] === "string") {
+      try {
+        data[field] = JSON.parse(data[field]);
+      } catch {}
     }
   }
 
@@ -36,21 +36,6 @@ const parseData = async (body, files) => {
   if (data.stock !== undefined) {
     data.stock = Number(data.stock);
   }
-
-  const existingImages = Array.isArray(data.existingImages)
-    ? data.existingImages
-    : [];
-  let newImageUrls = [];
-
-  if (files && files.length > 0) {
-    const uploadResults = await Promise.all(
-      files.map((file) => streamUpload(file.buffer))
-    );
-    newImageUrls = uploadResults.map((res) => res.secure_url);
-  }
-
-  data.productImages = [...existingImages, ...newImageUrls];
-  delete data.existingImages;
 
   if (Array.isArray(data.variations) && data.variations.length > 0) {
     data.stock = data.variations.reduce(
@@ -69,5 +54,3 @@ const parseData = async (body, files) => {
 
   return data;
 };
-
-export default parseData;

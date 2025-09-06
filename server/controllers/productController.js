@@ -6,7 +6,7 @@ import {
 } from "../schemas/productZodSchema.js";
 import createQueryParams from "../utils/queryHelper.js";
 import { z } from "zod";
-import parseData from "../utils/productProcessor.js";
+import { parseBodyFields, uploadNewImages } from "../utils/productProcessor.js";
 
 const getAllProducts = async (req, res) => {
   try {
@@ -71,7 +71,9 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    let data = await parseData(req.body, req.files);
+    const data = await parseBodyFields(req.body);
+    const newImageUrls = await uploadNewImages(req.files);
+    data.productImages = newImageUrls;
 
     const productValidate = await productZodSchema.parseAsync(data);
     const newProduct = new Product(productValidate);
@@ -96,9 +98,28 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = productIdZodSchema.parse(req.params);
-    let data = await parseData(req.body, req.files);
 
-    const productValidate = await productZodSchema.parseAsync(data);
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const parsedBody = await parseBodyFields(req.body);
+
+    const newImageUrls = await uploadNewImages(req.files);
+
+    const removedImages = parsedBody.removedImages || [];
+
+    const updatedImages = product.productImages
+      .filter((url) => !removedImages.includes(url))
+      .concat(newImageUrls);
+
+    const dataToValidate = {
+      ...parsedBody,
+      productImages: updatedImages,
+    };
+
+    const productValidate = await productZodSchema.parseAsync(dataToValidate);
     const updateProductData = await Product.findByIdAndUpdate(
       id,
       productValidate,

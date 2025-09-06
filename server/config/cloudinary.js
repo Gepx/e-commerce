@@ -2,7 +2,7 @@ import "dotenv/config";
 import cloudinary from "cloudinary";
 import streamifier from "streamifier";
 
-cloudinary.config({
+cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
@@ -10,7 +10,7 @@ cloudinary.config({
 
 const streamUpload = (fileBuffer) => {
   return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
+    const stream = cloudinary.v2.uploader.upload_stream(
       {
         upload_preset: "e-commerce",
       },

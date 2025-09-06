@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import productService from '@/components/features/products/services/productService';
-import { productZodSchema } from '@server/schemas/productZodSchema';
+import { productClientSchema } from '@/schemas/clientProductSchema';
 import { useMutation } from '@tanstack/react-query';
 
 const useProductForm = ({ initialData = null, setDialogOpen }) => {
@@ -14,10 +14,11 @@ const useProductForm = ({ initialData = null, setDialogOpen }) => {
   const [variantPrice, setVariantPrice] = useState({});
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [removedImages, setRemovedImages] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   const form = useForm({
-    resolver: zodResolver(productZodSchema),
+    resolver: zodResolver(productClientSchema),
     defaultValues: initialData || {
       productName: '',
       productImages: [],
@@ -39,6 +40,10 @@ const useProductForm = ({ initialData = null, setDialogOpen }) => {
       reviews: []
     }
   });
+
+  useEffect(() => {
+    form.setValue('productImages', imagePreviews, { shouldValidate: true });
+  }, [imagePreviews, form]);
 
   useEffect(() => {
     if (initialData) {
@@ -233,7 +238,7 @@ const useProductForm = ({ initialData = null, setDialogOpen }) => {
 
     const newImageFiles = [...imageFiles, ...files];
     setImageFiles(newImageFiles);
-    form.setValue('productImages', newImageFiles, { shouldValidate: true });
+    // form.setValue('productImages', newImageFiles, { shouldValidate: true });
 
     files.forEach((file) => {
       if (file.type.startsWith('image/')) {
@@ -248,9 +253,14 @@ const useProductForm = ({ initialData = null, setDialogOpen }) => {
   };
 
   const removeImage = (index) => {
+    const imageToRemove = imagePreviews[index];
+
+    if (imageToRemove.preview && !imageToRemove.file) {
+      setRemovedImages((prev) => [...prev, imageToRemove.preview]);
+    }
     const newImageFiles = imageFiles.filter((_, i) => i !== index);
     setImageFiles(newImageFiles);
-    form.setValue('productImages', newImageFiles);
+    // form.setValue('productImages', newImageFiles, { shouldValidate: true });
     setImagePreviews((prevPreviews) => prevPreviews.filter((_, i) => i !== index));
   };
 
@@ -285,10 +295,22 @@ const useProductForm = ({ initialData = null, setDialogOpen }) => {
         }
       });
 
-      const existingImageUrls = imagePreviews
-        .map((img) => img.preview)
-        .filter((url) => typeof url === 'string');
-      formData.append('existingImages', JSON.stringify(existingImageUrls));
+      const existingImageUrls = initialData
+        ? imagePreviews
+            .filter(
+              (img) =>
+                !img.file && typeof img.preview === 'string' && /^https?:\/\//.test(img.preview)
+            )
+            .map((img) => img.preview)
+        : [];
+
+      if (existingImageUrls.length > 0) {
+        formData.set('existingImages', JSON.stringify(existingImageUrls));
+      }
+
+      if (removedImages.length > 0) {
+        formData.append('removedImages', JSON.stringify(removedImages));
+      }
 
       imageFiles.forEach((file) => {
         formData.append('productImages', file);
@@ -310,7 +332,7 @@ const useProductForm = ({ initialData = null, setDialogOpen }) => {
           price: Number(variantPrice.combinations?.[key]) || 0
         };
       });
-      formData.append('variations', JSON.stringify(variations));
+      formData.set('variations', JSON.stringify(variations));
 
       if (initialData) {
         updateProduct({ id: initialData._id, data: formData });
@@ -319,6 +341,7 @@ const useProductForm = ({ initialData = null, setDialogOpen }) => {
       }
     },
     [
+      removedImages,
       imageFiles,
       imagePreviews,
       activeVariants,
@@ -333,14 +356,33 @@ const useProductForm = ({ initialData = null, setDialogOpen }) => {
   );
 
   const onInvalid = useCallback((errors) => {
-    const messages = Object.values(errors)
-      .map((err) => err?.message)
-      .filter(Boolean);
-    if (messages.length > 0) {
-      toast.error(messages[0]);
-    } else {
-      toast.error('Please complete all required fields.');
+    console.error('Form Validation Failed:', errors);
+
+    let firstErrorMessage = 'Please complete all required fields.';
+    for (const key in errors) {
+      if (errors[key]?.message) {
+        firstErrorMessage = errors[key].message;
+        break;
+      }
+      // Handle nested errors (like in productSpecification)
+      if (typeof errors[key] === 'object') {
+        for (const nestedKey in errors[key]) {
+          if (errors[key][nestedKey]?.message) {
+            firstErrorMessage = errors[key][nestedKey].message;
+            break;
+          }
+        }
+      }
     }
+    // const messages = Object.values(errors)
+    //   .map((err) => err?.message)
+    //   .filter(Boolean);
+    // if (messages.length > 0) {
+    //   toast.error(messages[0]);
+    // } else {
+    //   toast.error('Please complete all required fields.');
+    toast.error(firstErrorMessage);
+    // }
   }, []);
 
   return {
