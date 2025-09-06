@@ -11,10 +11,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@radix-ui/react-dropdown-menu';
+import { useAuth } from '@/context/AuthContext';
 
 const NavBar = () => {
   const [hamburgerMenu, setHamburgerMenu] = useState(false);
-
+  const { user } = useAuth();
   return (
     <nav className="sticky top-0 bg-white/95 backdrop-blur-sm supports-[backdrop-filter]:bg-white/60 flex items-center justify-between py-4 px-8 text-black ubuntu-font w-full border-b border-gray-200 shadow-sm z-50">
       <Link
@@ -23,7 +24,7 @@ const NavBar = () => {
         SHOP
       </Link>
       <SearchBar />
-      <DesktopNav />
+      <DesktopNav user={user} />
 
       <DropdownMenu open={hamburgerMenu} onOpenChange={setHamburgerMenu}>
         <DropdownMenuTrigger asChild className="md:hidden">
@@ -49,7 +50,7 @@ const NavBar = () => {
           className="w-screen rounded-t-none bg-white shadow-lg border-t-0 animate-in slide-in-from-top-2 duration-200"
           sideOffset={20}>
           <DropdownMenuItem asChild>
-            <MobileNav />
+            <MobileNav user={user} />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

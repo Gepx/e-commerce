@@ -4,12 +4,24 @@ import {
   NavigationMenuLink,
   NavigationMenuList
 } from '@radix-ui/react-navigation-menu';
-import { Bell, CircleUserRound, Heart, ShoppingCart } from 'lucide-react';
+import { Bell, CircleUserRound, Heart, ShieldUser, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const DesktopNav = () => (
+const DesktopNav = ({ user }) => (
   <NavigationMenu>
     <NavigationMenuList className="hidden md:flex items-center gap-5">
+      {user?.role === 'admin' && (
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link
+              to="/admin"
+              className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 p-2 rounded-md transition">
+              <ShieldUser className="w-5 h-5" />
+              <span className="font-medium">Admin</span>
+            </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+      )}
       <NavigationMenuItem>
         <NavigationMenuLink asChild>
           <Link
