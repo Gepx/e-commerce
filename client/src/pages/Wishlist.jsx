@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 
 const Wishlist = () => {
-  const user = useAuth();
+  const { user } = useAuth();
   const userId = user?._id;
 
   const {
@@ -13,10 +13,14 @@ const Wishlist = () => {
     isLoading,
     isError
   } = useQuery({
-    queryKey: ['wishlist'],
+    queryKey: ['wishlist', userId],
     queryFn: () => wishlistService.getUserWishlist(),
-    enabled: !!userId
+    enabled: !!userId,
+    retry: false,
+    staleTime: 60 * 1000
   });
+
+  console.log(wishListData);
 
   const wishlistItems = wishListData?.wishlist?.items || [];
 

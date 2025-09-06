@@ -39,8 +39,8 @@ const Footer = () => {
   };
   return (
     <div className="container">
-      <div className="grid grid-cols-4 gap-4 items-start">
-        <div className="flex flex-col items-start cols-span-1 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
+        <div className="flex flex-col items-start col-span-1 gap-4">
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">SHOP</h2>
             <p className="text-sm text-gray-500">
@@ -70,7 +70,7 @@ const Footer = () => {
           </ul>
         </div>
         {/* Resource */}
-        <div className="flex flex-col items-start cols-span-1 gap-4">
+        <div className="flex flex-col items-start col-span-1 gap-4">
           <h2 className="text-2xl font-bold">Resources</h2>
           <ul className="text-sm text-gray-500 space-y-2">
             {resourceLinks.map((link) => (
@@ -82,7 +82,7 @@ const Footer = () => {
         </div>
 
         {/* Email Subscription */}
-        <div className="flex flex-col items-start cols-span-1 gap-1">
+        <div className="flex flex-col items-start col-span-1 gap-2">
           <h2 className="text-sm font-semibold">Subscribe to our newsletter</h2>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -90,19 +90,19 @@ const Footer = () => {
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <div className="flex flex-row gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2 w-full">
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="Enter your email"
                         {...field}
-                        className="focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-l-0"
+                        className="w-full focus:outline-none focus:ring-2 focus:ring-gray-300"
                       />
                     </FormControl>
                     <Button
                       type="submit"
                       variant="ghost"
-                      className="bg-black text-white hover:bg-gray-700 cursor-pointer">
+                      className="bg-black text-white hover:bg-gray-700 cursor-pointer w-full sm:w-auto">
                       Subscribe
                     </Button>
                   </div>

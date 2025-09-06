@@ -24,6 +24,7 @@ import wishlistService from '@/components/features/wishlist/services/wishlistSer
 
 const Product = () => {
   const [currentImg, setCurrentImg] = useState(0);
+  const [touchStartX, setTouchStartX] = useState(null);
   const [startIndex, setStartIndex] = useState(0);
   const [ratingOpen, setRatingOpen] = useState(true);
   const [selectedVariants, setSelectedVariants] = useState({});
@@ -83,6 +84,27 @@ const Product = () => {
 
   const handleNext = () => {
     if (startIndex + visibleCount < product.productImages.length) setStartIndex(startIndex + 1);
+  };
+
+  const showPrevImage = () => {
+    setCurrentImg(
+      (prev) => (prev - 1 + product.productImages.length) % product.productImages.length
+    );
+  };
+
+  const showNextImage = () => {
+    setCurrentImg((prev) => (prev + 1) % product.productImages.length);
+  };
+
+  const onMainTouchStart = (e) => setTouchStartX(e.changedTouches[0].clientX);
+  const onMainTouchEnd = (e) => {
+    if (touchStartX === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(delta) > 40) {
+      if (delta < 0) showNextImage();
+      else showPrevImage();
+    }
+    setTouchStartX(null);
   };
 
   const visibleImages = product?.productImages.slice(startIndex, startIndex + visibleCount);
@@ -178,19 +200,40 @@ const Product = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="w-[calc(95%-1rem)] md:w-[95%] mx-auto mt-5 grid gap-6 lg:grid-cols-12">
-        <div className="lg:col-span-9 flex flex-col gap-6">
+      {/* MODIFIED: Changed from grid to flex */}
+      <div className="w-full px-4 md:w-[95%] md:px-0 mx-auto mt-5 flex flex-col lg:flex-row gap-6">
+        {/* MODIFIED: Changed width from col-span to w-x/12 */}
+        <div className="w-full lg:w-9/12 flex flex-col gap-6">
           <div className="grid grid-cols-1 lg:grid-cols-9 gap-6 items-start">
             {/* Images */}
             <div className="lg:col-span-5 flex flex-col gap-3">
-              <Card className="p-0 m-0 overflow-hidden aspect-[4/3]">
-                <img
-                  src={product.productImages[currentImg]}
-                  alt={product.productName}
-                  className="w-full h-full object-cover"
-                />
-              </Card>
-              <div className="relative flex items-center">
+              <div className="relative">
+                <Card
+                  className="p-0 m-0 overflow-hidden aspect-[4/3]"
+                  onTouchStart={onMainTouchStart}
+                  onTouchEnd={onMainTouchEnd}>
+                  <img
+                    src={product.productImages[currentImg]}
+                    alt={product.productName}
+                    className="w-full h-full object-cover"
+                  />
+                </Card>
+                {/* Mobile/Medium overlay arrows */}
+                <button
+                  type="button"
+                  onClick={showPrevImage}
+                  className="lg:hidden absolute inset-y-0 left-2 my-auto h-8 w-8 rounded-full bg-white/80 shadow flex items-center justify-center">
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={showNextImage}
+                  className="lg:hidden absolute inset-y-0 right-2 my-auto h-8 w-8 rounded-full bg-white/80 shadow flex items-center justify-center">
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+              {/* Thumbnails only on large screens */}
+              <div className="relative hidden lg:flex items-center">
                 {startIndex > 0 && (
                   <Button
                     onClick={handlePrev}
@@ -369,7 +412,7 @@ const Product = () => {
             </Card>
 
             {/* Filter + Review list */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <Card className="p-4 md:col-span-1 h-fit">
                 <div className="flex items-center gap-2 mb-2">
                   <FilterIcon className="w-4 h-4" />
@@ -407,7 +450,7 @@ const Product = () => {
                 </div>
               </Card>
 
-              <Card className="p-4 md:col-span-2">
+              <Card className="p-4 lg:col-span-2">
                 <div className="h-[300px] overflow-y-auto space-y-4 pr-1">
                   {reviews.map((r) => (
                     <div key={r.id} className="border-b pb-3 last:border-0 last:pb-0">
@@ -439,8 +482,7 @@ const Product = () => {
           </div>
         </div>
 
-        {/* Sticky Checkout Coloumn */}
-        <div className="lg:col-span-3">
+        <div className="w-full lg:w-3/12">
           <Card className="sticky top-24 p-4 flex flex-col gap-3 shadow-lg">
             <p className="text-xl font-semibold">
               Subtotal: {`Rp${displayPrice.toLocaleString('id-ID')}`}

@@ -6,7 +6,12 @@ async function getWishList(userId) {
     "items.product"
   );
   if (!wishlist) {
-    throw { status: 404, message: "Wishlist not found" };
+    return {
+      user: userId,
+      items: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
   }
   return wishlist;
 }

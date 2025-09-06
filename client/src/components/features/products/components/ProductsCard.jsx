@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '../../../ui/card';
 import { Checkbox } from '../../../ui/checkbox';
 import { Input } from '../../../ui/input';
-import { FilterIcon, Loader2 } from 'lucide-react';
+import { FilterIcon, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import PaginationComponent from '../../../common/pagination/Pagination';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ const ProductsCard = () => {
   const pageSize = 15;
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -45,20 +46,30 @@ const ProductsCard = () => {
   if (isError) return <div>Error fetching products</div>;
 
   return (
-    <div className="w-[calc(95%-1rem)] md:w-[95%] mx-auto grid grid-cols-1 md:grid-cols-5 gap-2">
-      <Card className="col-span-1 h-fit p-4">
-        <div className="flex  items-center gap-2">
-          <FilterIcon className="w-6 h-6" />
-          <h2 className="text-2xl font-semibold">Filter</h2>
-        </div>
-        <CardContent className="p-0 flex flex-col gap-4">
+    <div className="w-[calc(95%-1rem)] md:w-[95%] mx-auto flex flex-col md:grid grid-cols-1 md:grid-cols-5 gap-2 ">
+      <Card className="block md:col-span-1 h-fit p-4 md:max-w-[200px]">
+        <button
+          type="button"
+          className="flex items-center justify-between w-full gap-2 md:justify-start"
+          onClick={() => setIsFilterOpen((prev) => !prev)}>
+          <div className="flex items-center gap-2">
+            <FilterIcon className="w-6 h-6" />
+            <h2 className="text-2xl font-semibold">Filter</h2>
+          </div>
+          <span className="md:hidden">
+            {isFilterOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          </span>
+        </button>
+        <CardContent className={`${isFilterOpen ? 'flex' : 'hidden'} p-0 flex-col gap-4 md:flex`}>
           <div>
             <CardTitle className="text-lg font-semibold">Categories</CardTitle>
             {categories.map((c, index) => (
               <div className="flex items-center justify-between" key={index}>
                 <div className="flex items-center gap-2">
                   <Checkbox id={`cat-${c.category}`} className="w-4 h-4" />
-                  <label htmlFor={`cat-${c.category}`}>{c.category}</label>
+                  <label htmlFor={`cat-${c.category}`} className="line-clamp-1 max-w-[100px]">
+                    {c.category}
+                  </label>
                 </div>
                 <span>{c.count}</span>
               </div>
@@ -89,14 +100,14 @@ const ProductsCard = () => {
           </div>
         </CardContent>
       </Card>
-      <div className="col-span-4 grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="col-span-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {paginatedProducts.map((product) => {
           return (
             <Card
               key={product._id}
               className="w-fit h-[284px] overflow-hidden p-0 border-none gap-0 cursor-pointer flex flex-col"
               onClick={() => navigate(`/product/${product._id}`)}>
-              <div className="w-[180px] h-[180p x] overflow-hidden">
+              <div className="w-[180px] h-[180px] overflow-hidden">
                 <img
                   src={product.productImages[0]}
                   alt={product.productName}

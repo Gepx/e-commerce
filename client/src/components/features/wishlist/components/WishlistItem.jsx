@@ -103,8 +103,8 @@ const WishlistItem = ({ wishlistItems }) => {
                   })
                 }>
                 <CardContent className="px-4">
-                  <div className="relative flex h-48">
-                    <div className="w-48 h-full cursor-pointer bg-gray-100 flex-shrink-0">
+                  <div className="relative flex flex-col sm:flex-row gap-4">
+                    <div className="w-full sm:w-48 h-40 sm:h-full cursor-pointer bg-gray-100 flex-shrink-0">
                       <img
                         src={item.product.productImages[0]}
                         alt={item.product.productName}
@@ -112,7 +112,7 @@ const WishlistItem = ({ wishlistItems }) => {
                       />
                     </div>
 
-                    <div className="flex-1 p-4 flex flex-col justify-between">
+                    <div className="flex-1 p-4 flex flex-col">
                       <div className="cursor-pointer">
                         <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
                           {item.product.productName}
@@ -139,7 +139,7 @@ const WishlistItem = ({ wishlistItems }) => {
                       </div>
 
                       {/* Bottom right - Remove button */}
-                      <div className="flex justify-end mt-4">
+                      <div className="flex justify-end mt-4 sm:mt-auto">
                         <Button
                           size="sm"
                           variant="outline"
