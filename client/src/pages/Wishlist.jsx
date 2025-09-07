@@ -1,28 +1,12 @@
+import {
+  WishlistProvider,
+  useWishlistContext
+} from '@/components/features/wishlist/context/WishlistContext';
 import WishlistItem from '@/components/features/wishlist/components/WishlistItem';
-import { useAuth } from '@/context/AuthContext';
-import wishlistService from '@/components/features/wishlist/services/wishlistService';
-import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 
-const Wishlist = () => {
-  const { user } = useAuth();
-  const userId = user?._id;
-
-  const {
-    data: wishListData,
-    isLoading,
-    isError
-  } = useQuery({
-    queryKey: ['wishlist', userId],
-    queryFn: () => wishlistService.getUserWishlist(),
-    enabled: !!userId,
-    retry: false,
-    staleTime: 60 * 1000
-  });
-
-  console.log(wishListData);
-
-  const wishlistItems = wishListData?.wishlist?.items || [];
+const WishlistContent = () => {
+  const { isLoading, isError } = useWishlistContext();
 
   if (isLoading) {
     return (
@@ -40,7 +24,15 @@ const Wishlist = () => {
     );
   }
 
-  return <WishlistItem wishlistItems={wishlistItems} />;
+  return <WishlistItem />;
+};
+
+const Wishlist = () => {
+  return (
+    <WishlistProvider>
+      <WishlistContent />
+    </WishlistProvider>
+  );
 };
 
 export default Wishlist;
