@@ -1,12 +1,12 @@
 import { ProfileProvider } from '@/components/features/profile/context/ProfileContext';
-import AccountInfo from '@/components/features/profile/components/AccountInfo';
+import Address from '@/components/features/profile/components/Address';
 
-const Profile = () => {
+const Addresses = () => {
   return (
     <ProfileProvider>
-      <AccountInfo />
+      <Address />
     </ProfileProvider>
   );
 };
 
-export default Profile;
+export default Addresses;
