@@ -1,7 +1,7 @@
 import React from 'react';
 import Banner from '@/components/home/banner';
-import ProductsCard from '@/components/features/products/components/ProductsCard';
 import Footer from '@/components/home/Footer';
+import Products from '@/components/features/products/Products';
 
 const Home = () => {
   return (
@@ -10,7 +10,7 @@ const Home = () => {
         <Banner />
       </section>
       <section className="ubuntu-font">
-        <ProductsCard />
+        <Products />
       </section>
       <section className="bg-gray-100 ubuntu-font p-8">
         <Footer />

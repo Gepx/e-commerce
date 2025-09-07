@@ -5,7 +5,7 @@ import Auth from './pages/Auth';
 import AuthLayout from './components/layouts/AuthLayout';
 import Register from './components/features/auth/components/Register';
 import ResetPassword from './components/features/auth/components/ResetPassword';
-import Product from './components/features/products/components/Product';
+import Product from './pages/Product';
 import SidebarLayout from './components/layouts/SidebarLayout';
 import Address from './components/features/profile/components/Address';
 import Dashboard from './pages/admin/Dashboard';
