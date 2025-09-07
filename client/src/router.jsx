@@ -7,7 +7,7 @@ import Register from './components/features/auth/components/Register';
 import ResetPassword from './components/features/auth/components/ResetPassword';
 import Product from './pages/Product';
 import SidebarLayout from './components/layouts/SidebarLayout';
-import Address from './components/features/profile/components/Address';
+import Addresses from './pages/Addresses';
 import Dashboard from './pages/admin/Dashboard';
 import AdminLayout from './pages/admin/AdminLayout';
 import ProductTable from './pages/admin/product-management/ProductTable';
@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
   {
     path: '/addresses',
     element: <SidebarLayout />,
-    children: [{ index: true, element: <Address /> }]
+    children: [{ index: true, element: <Addresses /> }]
   },
   {
     path: '/admin',

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { updateUserZodSchema } from '@server/schemas/userZodSchema';
+import { updateUserZodSchema } from '@shared';
 
 const useProfileForm = (user, defaultAddress, onSubmit) => {
   const form = useForm({

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { emailOnlySchema, verifyOtpSchema, resetPasswordSchema } from '@server/schemas/authSchema';
+import { emailOnlySchema, verifyOtpSchema, resetPasswordSchema } from '@shared';
 import authService from '@/components/features/auth/services/authService';
 
 const usePasswordReset = () => {

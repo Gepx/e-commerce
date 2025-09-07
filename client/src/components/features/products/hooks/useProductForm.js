@@ -4,7 +4,15 @@ import { useForm } from 'react-hook-form';
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import productService from '@/components/features/products/services/productService';
-import { productClientSchema } from '@/schemas/clientProductSchema';
+import { productZodSchema } from '@shared';
+import { z } from 'zod';
+
+// Client-specific schema for handling file uploads
+const productClientSchema = productZodSchema.extend({
+  productImages: z.array(z.any()).min(1, 'At least one image is required'),
+  productPrice: z.coerce.number().nonnegative(),
+  stock: z.coerce.number().nonnegative().default(0)
+});
 import { useMutation } from '@tanstack/react-query';
 
 const useProductForm = ({ initialData = null, setDialogOpen }) => {
