@@ -121,7 +121,7 @@ const forgotPassword = async (req, res) => {
     user.resetOtp = otp;
     user.resetOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     const payload = { message: "If that email exists, an OTP was sent" };
 
@@ -194,7 +194,8 @@ const resetPassword = async (req, res) => {
     user.resetOtp = null;
     user.resetOtpExpires = null;
 
-    await user.save();
+    // Avoid failing on legacy users missing required profile fields
+    await user.save({ validateBeforeSave: false });
 
     return res.status(200).json({
       message: "Password reset successfully",

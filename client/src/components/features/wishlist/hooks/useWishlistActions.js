@@ -3,11 +3,13 @@ import { toast } from 'sonner';
 import { useMemo } from 'react';
 import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 import wishlistService from '@/components/features/wishlist/services/wishlistService';
 
 const useWishlistActions = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const debounceToastRemove = useMemo(
     () => debounce(() => toast.success('Item removed successfully'), 500),
@@ -19,6 +21,7 @@ const useWishlistActions = () => {
   const { mutate: removeItem, isPending: isRemoving } = useMutation({
     mutationFn: (item) => wishlistService.removeItemFromWishlist(item),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['wishlist', user?._id] });
       queryClient.invalidateQueries({ queryKey: ['wishlist'] });
       debounceToastRemove();
     },

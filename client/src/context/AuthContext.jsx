@@ -24,7 +24,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const res = await authService.login(credentials);
-    if (res?.user) setUser(res.user);
+    if (res?.user) {
+      const normalized = { ...res.user };
+      if (!normalized._id && normalized.id) {
+        normalized._id = normalized.id;
+      }
+      setUser(normalized);
+    }
     return res;
   };
 

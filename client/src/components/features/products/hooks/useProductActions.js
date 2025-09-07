@@ -2,14 +2,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import cartService from '@/components/features/cart/services/cartService';
 import wishlistService from '@/components/features/wishlist/services/wishlistService';
-
+import { useAuth } from '@/context/AuthContext';
 const useProductActions = () => {
   const queryClient = useQueryClient();
+
+  const { user } = useAuth();
 
   const { mutate: addItemToCart, isPending: adding } = useMutation({
     mutationFn: (item) => cartService.addItemToCart(item),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cartItems'] });
       toast.success('Item added to cart successfully.');
     },
     onError: (err) => {
@@ -20,6 +22,7 @@ const useProductActions = () => {
   const { mutate: addItemToWishlist, isPending: addingToWishlist } = useMutation({
     mutationFn: (item) => wishlistService.addItemToWishlist(item),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['wishlist', user?._id] });
       queryClient.invalidateQueries({ queryKey: ['wishlist'] });
       toast.success('Item added to wishlist successfully.');
     },
