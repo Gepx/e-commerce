@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -15,77 +14,26 @@ import {
   FormControl,
   FormMessage
 } from '@/components/ui/form';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { emailOnlySchema, verifyOtpSchema, resetPasswordSchema } from '@server/schemas/authSchema';
-import authService from '@/components/features/auth/services/authService';
-import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import usePasswordReset from '@/components/features/auth/hooks/usePasswordReset';
+import PasswordField from '@/components/features/auth/components/common/PasswordField';
 
 const ResetWithEmailOtp = () => {
-  const [step, setStep] = useState(1);
-  const [email, setEmail] = useState('');
-  const [resetToken, setResetToken] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [devOtp, setDevOtp] = useState(null);
-
-  const emailForm = useForm({
-    resolver: zodResolver(emailOnlySchema),
-    defaultValues: { email: '' }
-  });
-  const otpForm = useForm({
-    resolver: zodResolver(verifyOtpSchema),
-    defaultValues: { email: '', otp: '' }
-  });
-
-  const passwordForm = useForm({
-    resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { newPassword: '', confirmPassword: '' }
-  });
-
-  const onSendOtp = async (data) => {
-    setSubmitting(true);
-    try {
-      const res = await authService.requestPasswordOtp(data.email);
-      setEmail(data.email);
-      otpForm.reset({ email: data.email, otp: '' });
-
-      if (res.devOtp) setDevOtp(res.devOtp);
-      setStep(2);
-    } catch (error) {
-      emailForm.setError('email', { message: error.message });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const onVerifyOtp = async (data) => {
-    setSubmitting(true);
-    try {
-      const res = await authService.verifyPasswordOtp({ email: data.email, otp: data.otp });
-      setResetToken(res.resetToken);
-      setStep(3);
-    } catch (error) {
-      otpForm.setError('otp', { message: error.message });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const onResetPassword = async (data) => {
-    setSubmitting(true);
-    try {
-      await authService.resetPassword({ token: resetToken, newPassword: data.newPassword });
-      setStep(4);
-      toast.success('Password reset successfully');
-    } catch (error) {
-      passwordForm.setError('newPassword', { message: error.message });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    step,
+    email,
+    submitting,
+    devOtp,
+    emailForm,
+    otpForm,
+    passwordForm,
+    sendOtp,
+    verifyOtp,
+    resetPassword,
+    goToStep
+  } = usePasswordReset();
 
   return (
     <div className="container mx-auto px-4 py-12 md:px-6 md:py-16">
@@ -102,7 +50,7 @@ const ResetWithEmailOtp = () => {
         <CardContent>
           {step === 1 && (
             <Form {...emailForm}>
-              <form onSubmit={emailForm.handleSubmit(onSendOtp)} className="space-y-4">
+              <form onSubmit={sendOtp} className="space-y-4">
                 <FormField
                   control={emailForm.control}
                   name="email"
@@ -110,7 +58,12 @@ const ResetWithEmailOtp = () => {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="test@example.com" {...field} />
+                        <Input
+                          type="email"
+                          placeholder="test@example.com"
+                          autoComplete="email"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-500 text-[10px]" />
                     </FormItem>
@@ -128,7 +81,7 @@ const ResetWithEmailOtp = () => {
 
           {step === 2 && (
             <Form {...otpForm}>
-              <form onSubmit={otpForm.handleSubmit(onVerifyOtp)} className="space-y-4">
+              <form onSubmit={verifyOtp} className="space-y-4">
                 {devOtp && <p className="text-sm text-muted-foreground">DEV OTP: {devOtp}</p>}
                 <FormField
                   control={otpForm.control}
@@ -144,7 +97,7 @@ const ResetWithEmailOtp = () => {
                           onChange={field.onChange}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500 text-[10px]" />
                     </FormItem>
                   )}
                 />
@@ -155,9 +108,15 @@ const ResetWithEmailOtp = () => {
                     <FormItem>
                       <FormLabel>One-Time Code</FormLabel>
                       <FormControl>
-                        <Input placeholder="123456" maxLength={6} {...field} />
+                        <Input
+                          type="text"
+                          placeholder="123456"
+                          maxLength={6}
+                          autoComplete="one-time-code"
+                          {...field}
+                        />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500 text-[10px]" />
                     </FormItem>
                   )}
                 />
@@ -165,8 +124,8 @@ const ResetWithEmailOtp = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-1/3"
-                    onClick={() => setStep(1)}
+                    className="w-1/3 cursor-pointer"
+                    onClick={() => goToStep(1)}
                     disabled={submitting}>
                     Back
                   </Button>
@@ -183,39 +142,31 @@ const ResetWithEmailOtp = () => {
 
           {step === 3 && (
             <Form {...passwordForm}>
-              <form onSubmit={passwordForm.handleSubmit(onResetPassword)} className="space-y-4">
+              <form onSubmit={resetPassword} className="space-y-4">
                 <FormField
                   control={passwordForm.control}
                   name="newPassword"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>New Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                    <PasswordField field={field} label="New Password" autoComplete="new-password" />
                   )}
                 />
                 <FormField
                   control={passwordForm.control}
                   name="confirmPassword"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                    <PasswordField
+                      field={field}
+                      label="Confirm Password"
+                      autoComplete="new-password"
+                    />
                   )}
                 />
                 <div className="flex gap-2">
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-1/3"
-                    onClick={() => setStep(2)}
+                    className="w-1/3 cursor-pointer"
+                    onClick={() => goToStep(2)}
                     disabled={submitting}>
                     Back
                   </Button>
