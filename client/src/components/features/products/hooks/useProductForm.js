@@ -364,7 +364,7 @@ const useProductForm = ({ initialData = null, setDialogOpen }) => {
         firstErrorMessage = errors[key].message;
         break;
       }
-      // Handle nested errors (like in productSpecification)
+
       if (typeof errors[key] === 'object') {
         for (const nestedKey in errors[key]) {
           if (errors[key][nestedKey]?.message) {
