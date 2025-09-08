@@ -5,15 +5,28 @@ import {
 import { userIdParamZodSchema } from "../schemas/userZodSchema.js";
 import { z } from "zod";
 import cartService from "../services/cartService.js";
+import cacheService from "../services/cacheService.js";
 
 const getUserCart = async (req, res) => {
   try {
     const { id: userId } = userIdParamZodSchema.parse({ id: req.user.id });
+
+    const cacheKey = `cart:${userId}`;
+
+    const cachedCart = await cacheService.get(cacheKey);
+
+    if (cachedCart) {
+      return res.status(200).json(cachedCart);
+    }
+
     const cart = await cartService.getCartItems(userId);
-    return res.status(200).json({
+
+    const response = {
       message: "Cart retrieved successfully",
       cart,
-    });
+    };
+    await cacheService.set(cacheKey, response, 600);
+    res.status(200).json(response);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({
@@ -40,6 +53,8 @@ const addItemToCart = async (req, res) => {
       quantity,
       selectedVariants,
     });
+
+    await cacheService.del(`wishlist:${userId}`);
 
     return res.status(200).json({
       message: "Item successfully added to cart",
@@ -72,6 +87,9 @@ const updateCartItem = async (req, res) => {
       quantity,
       selectedVariants,
     });
+
+    await cacheService.del(`wishlist:${userId}`);
+
     return res
       .status(200)
       .json({ message: "Item successfully updated in cart", cart });
@@ -99,6 +117,8 @@ const removeCartItem = async (req, res) => {
       productId: productId,
       selectedVariants,
     });
+
+    await cacheService.del(`wishlist:${userId}`);
 
     res.status(200).json({
       message: "Item successfully removed from cart",

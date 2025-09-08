@@ -7,12 +7,20 @@ import {
 } from "../schemas/userZodSchema.js";
 import createQueryParams from "../utils/queryHelper.js";
 import streamUpload from "../config/cloudinary.js";
+import cacheService from "../services/cacheService.js";
 
 const getUserController = async (req, res) => {
   try {
     const { page, limit, email } = await queryParamZodSchema.parseAsync(
       req.query
     );
+
+    const cacheKey = `users:${JSON.stringify(req.query)}`;
+    const cachedUsers = await cacheService.get(cacheKey);
+
+    if (cachedUsers) {
+      return res.status(200).json(cachedUsers);
+    }
 
     const offset = (page - 1) * limit;
 
@@ -36,7 +44,7 @@ const getUserController = async (req, res) => {
       User.countDocuments(conditions),
     ]);
 
-    return res.status(200).json({
+    const response = {
       message: "Users retrieved successfully",
       users,
       pagination: {
@@ -45,7 +53,10 @@ const getUserController = async (req, res) => {
         limit,
         totalPages: Math.ceil(total / limit),
       },
-    });
+    };
+
+    await cacheService.set(cacheKey, response, 600);
+    res.status(200).json(response);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json([
@@ -73,6 +84,11 @@ const updateUserController = async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    await Promise.all([
+      cacheService.del(`user:${id}`),
+      cacheService.clearPattern("users:*"),
+    ]);
     res.status(200).json({
       message: "User updated successfully",
       user: updatedUser,
@@ -102,6 +118,12 @@ const deleteUserController = async (req, res) => {
     if (!deleteUser) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    await Promise.all([
+      cacheService.del(`user:${id}`),
+      cacheService.clearPattern("users:*"),
+    ]);
+
     res
       .status(200)
       .json({ message: "User deleted successfully", user: deleteUser });
@@ -118,14 +140,22 @@ const deleteUserController = async (req, res) => {
 
 const getUserProfileController = async (req, res) => {
   try {
-    const { userId } = await userIdParamZodSchema.parseAsync(req.user.id);
+    const { userId } = req.user.id;
+    const cacheKey = `userProfile:${userId}`;
+    const cachedUser = await cacheService.get(cacheKey);
+    if (cachedUser) {
+      return res.status(200).json(cachedUser);
+    }
     const user = await User.findById(userId).where({ deletedAt: null });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res
-      .status(200)
-      .json({ message: "User profile retrieved successfully", user });
+    const response = {
+      message: "User profile retrieved successfully",
+      user,
+    };
+    await cacheService.set(cacheKey, response, 300);
+    res.status(200).json(response);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({
@@ -155,6 +185,8 @@ const updateAvatarController = async (req, res) => {
 
     if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
+
+    await cacheService.del(`user:${id}`);
 
     res
       .status(200)
@@ -188,6 +220,8 @@ const removeAvatarController = async (req, res) => {
 
     if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
+
+    await cacheService.del(`user:${id}`);
 
     res
       .status(200)

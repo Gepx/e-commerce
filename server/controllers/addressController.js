@@ -6,18 +6,30 @@ import {
 import { userIdParamZodSchema } from "../schemas/userZodSchema.js";
 import Address from "../models/addressModel.js";
 import { z } from "zod";
+import cacheService from "../services/cacheService.js";
 
 const getUserAddresses = async (req, res) => {
   try {
     const { id: userId } = await userIdParamZodSchema.parseAsync({
       id: req.user.id,
     });
+
+    const cacheKey = `addresses:${userId}`;
+
+    const cachedAddresses = await cacheService.get(cacheKey);
+
+    if (cachedAddresses) {
+      return res.status(200).json(cachedAddresses);
+    }
+
     const userAddresses = await Address.find({ user: userId, deletedAt: null });
 
-    res.status(200).json({
+    const response = {
       message: "User addresses retrieved successfully",
       addresses: userAddresses,
-    });
+    };
+    await cacheService.set(cacheKey, response, 600);
+    res.status(200).json(response);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({
@@ -41,6 +53,8 @@ const addUserAddress = async (req, res) => {
     }
 
     await newAddress.save();
+
+    await cacheService.delMany(`addresses:${userId}`);
     res.status(201).json({
       message: "Address created successfully",
       address: newAddress,
@@ -80,6 +94,8 @@ const updateUserAddress = async (req, res) => {
       });
     }
 
+    await cacheService.del(`addresses:${userId}`);
+
     res.status(200).json({
       message: "Address updated successfully",
       address: updatedAddress,
@@ -116,6 +132,8 @@ const deleteUserAddress = async (req, res) => {
         message: "Address not found or you do not have permission to edit it",
       });
     }
+
+    await cacheService.del(`addresses:${userId}`);
 
     res.status(200).json({
       message: "Address deleted successfully",

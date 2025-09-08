@@ -7,10 +7,18 @@ import {
 import createQueryParams from "../utils/queryHelper.js";
 import { z } from "zod";
 import { parseBodyFields, uploadNewImages } from "../utils/productProcessor.js";
+import cacheService from "../services/cacheService.js";
 
 const getAllProducts = async (req, res) => {
   try {
     const { page, limit } = queryParamZodSchema.parse(req.query);
+
+    const cacheKey = `products:${JSON.stringify(req.query)}`;
+
+    const cachedProducts = await cacheService.get(cacheKey);
+    if (cachedProducts) {
+      return res.status(200).json(cachedProducts);
+    }
 
     const offset = (page - 1) * limit;
 
@@ -26,7 +34,7 @@ const getAllProducts = async (req, res) => {
       Product.countDocuments(conditions),
     ]);
 
-    res.status(200).json({
+    const response = {
       message: "Product retrieved successfully",
       products,
       pagination: {
@@ -35,7 +43,10 @@ const getAllProducts = async (req, res) => {
         limit,
         totalPages: Math.ceil(total / limit),
       },
-    });
+    };
+
+    await cacheService.set(cacheKey, response, 600);
+    res.status(200).json(response);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({
@@ -50,14 +61,27 @@ const getAllProducts = async (req, res) => {
 const getProductById = async (req, res) => {
   try {
     const { id } = productIdZodSchema.parse(req.params);
+
+    const cacheKey = `product:${id}`;
+    const cachedProduct = await cacheService.get(cacheKey);
+
+    if (cachedProduct) {
+      return res.status(200).json(cachedProduct);
+    }
+
     const product = await Product.findById(id).where({ deletedAt: null });
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
-    res.status(200).json({
+
+    const response = {
       message: "Product retrieved successfully",
       product,
-    });
+    };
+
+    await cacheService.set(cacheKey, response, 1800);
+
+    res.status(200).json(response);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({
@@ -79,6 +103,8 @@ const createProduct = async (req, res) => {
     const newProduct = new Product(productValidate);
 
     await newProduct.save();
+
+    await cacheService.clearPattern("products:*");
 
     res.status(201).json({
       message: "Product created successfully",
@@ -128,6 +154,12 @@ const updateProduct = async (req, res) => {
     if (!updateProductData) {
       return res.status(404).json({ error: "Product not found" });
     }
+
+    await Promise.all([
+      cacheService.del(`product:${id}`),
+      cacheService.clearPattern("products:*"),
+    ]);
+
     res.status(200).json({
       message: "Product updated successfully",
       product: updateProductData,
@@ -157,6 +189,12 @@ const deleteProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
+
+    await Promise.all([
+      cacheService.del(`product:${id}`),
+      cacheService.clearPattern("products:*"),
+    ]);
+
     res.status(200).json({
       message: "Product deleted successfully",
       product,
