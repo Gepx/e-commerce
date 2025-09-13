@@ -27,9 +27,4 @@ export const cacheMiddleware = (duration = 300) => {
   };
 };
 
-export const wishlistCacheMiddleware = cacheMiddleware(600);
-export const cartCacheMiddleware = cacheMiddleware(300);
-export const addressCacheMiddleware = cacheMiddleware(600);
-export const profileCacheMiddleware = cacheMiddleware(600);
-export const productCacheMiddleware = cacheMiddleware(600);
-export const userCacheMiddleware = cacheMiddleware(300);
+export const simpleCacheMiddleware = cacheMiddleware(300);
