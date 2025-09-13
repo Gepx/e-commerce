@@ -1,12 +1,11 @@
 import express from "express";
 import ProductController from "../controllers/productController.js";
 import upload from "../config/multer.js";
-import { productCacheMiddleware } from "../middleware/cache/cacheMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", productCacheMiddleware, ProductController.getAllProducts);
-router.get("/:id", productCacheMiddleware, ProductController.getProductById);
+router.get("/", ProductController.getAllProducts);
+router.get("/:id", ProductController.getProductById);
 router.post(
   "/",
   upload.array("productImages", 10),

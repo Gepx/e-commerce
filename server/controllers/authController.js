@@ -206,7 +206,6 @@ const resetPassword = async (req, res) => {
     user.resetOtp = null;
     user.resetOtpExpires = null;
 
-    // Avoid failing on legacy users missing required profile fields
     await user.save({ validateBeforeSave: false });
 
     return res.status(200).json({

@@ -8,7 +8,6 @@ import {
   emailOnlySchema,
 } from "../../shared/src/schemas/auth.js";
 
-// Server-specific OAuth schema (not in shared)
 const oauthProfileSchema = z.object({
   provider: z.enum(["google", "github"]),
   providerId: z.string().min(1),

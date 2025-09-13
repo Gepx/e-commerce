@@ -11,7 +11,6 @@ import {
   verifyOtpSchema,
 } from "../schemas/authSchema.js";
 import { authLimiter } from "../utils/rateLimiter.js";
-import { userCacheMiddleware } from "../middleware/cache/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -29,7 +28,7 @@ router.post(
 );
 router.post("/logout", AuthController.logout);
 
-router.get("/me", userCacheMiddleware, verifyToken, AuthController.me);
+router.get("/me", verifyToken, AuthController.me);
 
 // Reset Password
 router.post(
