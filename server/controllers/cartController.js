@@ -54,7 +54,7 @@ const addItemToCart = async (req, res) => {
       selectedVariants,
     });
 
-    await cacheService.del(`cart:${userId}`);
+    await cacheService.delete(`cart:${userId}`);
 
     return res.status(200).json({
       message: "Item successfully added to cart",
@@ -88,7 +88,7 @@ const updateCartItem = async (req, res) => {
       selectedVariants,
     });
 
-    await cacheService.del(`wishlist:${userId}`);
+    await cacheService.delete(`cart:${userId}`);
 
     return res
       .status(200)
@@ -118,7 +118,7 @@ const removeCartItem = async (req, res) => {
       selectedVariants,
     });
 
-    await cacheService.del(`wishlist:${userId}`);
+    await cacheService.delete(`cart:${userId}`);
 
     res.status(200).json({
       message: "Item successfully removed from cart",

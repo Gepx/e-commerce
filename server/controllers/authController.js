@@ -64,6 +64,13 @@ const login = async (req, res) => {
       sameSite: "lax",
     });
 
+    res.cookie("session", "1", {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 1000,
+      sameSite: "lax",
+    });
+
     res.status(200).json({
       message: "Login successful",
       user: {
@@ -82,6 +89,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     res.clearCookie("token");
+    res.clearCookie("session");
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });

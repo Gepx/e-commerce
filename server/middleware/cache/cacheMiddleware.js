@@ -14,7 +14,6 @@ export const cacheMiddleware = (duration = 300) => {
 
       res.json = function (data) {
         cacheService.set(key, data, duration);
-        console.log("Cache set for:", key);
 
         return originalJSON.call(this, data);
       };

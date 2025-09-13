@@ -153,7 +153,7 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    await cacheService.del(`product:${id}`);
+    await cacheService.delete(`product:${id}`);
     res.status(200).json({
       message: "Product updated successfully",
       product: updateProductData,
@@ -184,7 +184,7 @@ const deleteProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    await cacheService.del(`product:${id}`),
+    await cacheService.delete(`product:${id}`),
       res.status(200).json({
         message: "Product deleted successfully",
         product,

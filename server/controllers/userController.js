@@ -85,7 +85,7 @@ const updateUserController = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    await cacheService.del(`user:${id}`),
+    await cacheService.delete(`user:${id}`),
       res.status(200).json({
         message: "User updated successfully",
         user: updatedUser,
@@ -116,7 +116,7 @@ const deleteUserController = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    await cacheService.del(`user:${id}`),
+    await cacheService.delete(`user:${id}`),
       res
         .status(200)
         .json({ message: "User deleted successfully", user: deleteUser });
@@ -179,7 +179,7 @@ const updateAvatarController = async (req, res) => {
     if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
 
-    await cacheService.del(`user:${id}`);
+    await cacheService.delete(`user:${id}`);
 
     res
       .status(200)
@@ -214,7 +214,7 @@ const removeAvatarController = async (req, res) => {
     if (!updatedUser)
       return res.status(404).json({ message: "User not found" });
 
-    await cacheService.del(`user:${id}`);
+    await cacheService.delete(`user:${id}`);
 
     res
       .status(200)

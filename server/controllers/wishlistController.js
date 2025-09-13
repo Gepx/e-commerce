@@ -43,15 +43,11 @@ const addItemToWishlist = async (req, res) => {
       id: req.user.id,
     });
 
-    console.log(userId);
-
     const {
       productId: productId,
       selectedVariants = {},
       notifyWhenAvailable = false,
     } = await wishlistItemZodSchema.parseAsync(req.body);
-
-    console.log(productId);
 
     const addedWishlist = await wishlistService.addToWishlist(userId, {
       productId: productId,
@@ -63,7 +59,7 @@ const addItemToWishlist = async (req, res) => {
       ? "Item successfully updated in wishlist"
       : "Item successfully added to wishlist";
 
-    await cacheService.del(`wishlist:${userId}`);
+    await cacheService.delete(`wishlist:${userId}`);
 
     res.status(200).json({
       message,
@@ -71,7 +67,6 @@ const addItemToWishlist = async (req, res) => {
       updated: addedWishlist.updated,
     });
   } catch (error) {
-    console.log("Error: ", error);
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         message: "Invalid data provided",
@@ -94,7 +89,7 @@ const removeItemFromWishlist = async (req, res) => {
       selectedVariants,
     });
 
-    await cacheService.del(`wishlist:${userId}`);
+    await cacheService.delete(`wishlist:${userId}`);
 
     res.status(200).json({
       message: "Item successfully removed from wishlist",
