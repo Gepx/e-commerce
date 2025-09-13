@@ -18,7 +18,9 @@ const CheckoutCard = ({
   adding,
   addingToWishlist,
   userId,
-  selectedVariants
+  selectedVariants,
+  onBuyNow,
+  buyingNow = false
 }) => {
   return (
     <div className="w-full lg:w-3/12">
@@ -64,9 +66,10 @@ const CheckoutCard = ({
 
         <Button
           size="lg"
-          disabled={!isPurchasable}
+          disabled={!isPurchasable || buyingNow}
+          onClick={onBuyNow}
           className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer">
-          Buy Now
+          {buyingNow ? 'Processing...' : 'Buy Now'}
         </Button>
 
         <Button

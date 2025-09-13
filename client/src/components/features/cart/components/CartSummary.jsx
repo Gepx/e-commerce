@@ -3,7 +3,13 @@ import { Separator } from '../../../ui/separator';
 import { Button } from '../../../ui/button';
 import { formatPrice } from '@/components/features/shared/utils/productUtils';
 
-const CartSummary = ({ selectedItems = [], totalPrice = 0, cartSummary = {} }) => {
+const CartSummary = ({
+  selectedItems = [],
+  totalPrice = 0,
+  cartSummary = {},
+  onCheckout,
+  loading = false
+}) => {
   const summary =
     cartSummary.subtotal !== undefined
       ? cartSummary
@@ -59,8 +65,16 @@ const CartSummary = ({ selectedItems = [], totalPrice = 0, cartSummary = {} }) =
             <span className="font-semibold">{formatPrice(total)}</span>
           </div>
 
-          <Button className="w-full mt-4 cursor-pointer" disabled={!hasItems} size="lg">
-            {hasItems ? `Checkout (${itemCount})` : 'Select Items to Checkout'}
+          <Button
+            className="w-full mt-4 cursor-pointer"
+            disabled={!hasItems || loading}
+            onClick={onCheckout}
+            size="lg">
+            {loading
+              ? 'Processing...'
+              : hasItems
+                ? `Checkout (${itemCount})`
+                : 'Select Items to Checkout'}
           </Button>
 
           {!hasItems && (
