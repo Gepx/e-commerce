@@ -104,8 +104,6 @@ const createProduct = async (req, res) => {
 
     await newProduct.save();
 
-    await cacheService.clearPattern("products:*");
-
     res.status(201).json({
       message: "Product created successfully",
       product: newProduct,
@@ -155,11 +153,7 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    await Promise.all([
-      cacheService.del(`product:${id}`),
-      cacheService.clearPattern("products:*"),
-    ]);
-
+    await cacheService.del(`product:${id}`);
     res.status(200).json({
       message: "Product updated successfully",
       product: updateProductData,
@@ -190,15 +184,11 @@ const deleteProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    await Promise.all([
-      cacheService.del(`product:${id}`),
-      cacheService.clearPattern("products:*"),
-    ]);
-
-    res.status(200).json({
-      message: "Product deleted successfully",
-      product,
-    });
+    await cacheService.del(`product:${id}`),
+      res.status(200).json({
+        message: "Product deleted successfully",
+        product,
+      });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({

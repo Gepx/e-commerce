@@ -85,14 +85,11 @@ const updateUserController = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    await Promise.all([
-      cacheService.del(`user:${id}`),
-      cacheService.clearPattern("users:*"),
-    ]);
-    res.status(200).json({
-      message: "User updated successfully",
-      user: updatedUser,
-    });
+    await cacheService.del(`user:${id}`),
+      res.status(200).json({
+        message: "User updated successfully",
+        user: updatedUser,
+      });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({
@@ -119,14 +116,10 @@ const deleteUserController = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    await Promise.all([
-      cacheService.del(`user:${id}`),
-      cacheService.clearPattern("users:*"),
-    ]);
-
-    res
-      .status(200)
-      .json({ message: "User deleted successfully", user: deleteUser });
+    await cacheService.del(`user:${id}`),
+      res
+        .status(200)
+        .json({ message: "User deleted successfully", user: deleteUser });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({

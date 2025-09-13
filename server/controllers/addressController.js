@@ -54,7 +54,7 @@ const addUserAddress = async (req, res) => {
 
     await newAddress.save();
 
-    await cacheService.delMany(`addresses:${userId}`);
+    await cacheService.del(`addresses:${userId}`);
     res.status(201).json({
       message: "Address created successfully",
       address: newAddress,

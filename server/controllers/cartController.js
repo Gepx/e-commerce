@@ -54,7 +54,7 @@ const addItemToCart = async (req, res) => {
       selectedVariants,
     });
 
-    await cacheService.del(`wishlist:${userId}`);
+    await cacheService.del(`cart:${userId}`);
 
     return res.status(200).json({
       message: "Item successfully added to cart",
