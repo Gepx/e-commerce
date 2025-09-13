@@ -3,11 +3,19 @@ import authService from '@/components/features/auth/services/authService';
 
 const AuthContext = createContext({ user: null, loading: true });
 
+const hasSessionCookie = () =>
+  typeof document !== 'undefined' && document.cookie.includes('session=');
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
+    if (!hasSessionCookie()) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
     try {
       const response = await authService.me();
       setUser(response.user || null);
