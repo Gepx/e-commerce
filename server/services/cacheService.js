@@ -17,7 +17,7 @@ class CacheService {
       const cached = await client.get(key);
       return cached ? JSON.parse(cached) : null;
     } catch (error) {
-      console.erro("Cache get error:", error);
+      console.error("Cache get error:", error);
       return null;
     }
   }

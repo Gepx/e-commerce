@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import cacheService from "../services/cacheService.js";
 
 const register = async (req, res) => {
   try {
@@ -60,7 +61,7 @@ const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 30 * 60 * 1000,
+      maxAge: 60 * 60 * 1000,
       sameSite: "lax",
     });
 
