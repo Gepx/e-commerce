@@ -1,5 +1,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
@@ -9,10 +11,11 @@ const ProductCard = ({ product }) => {
       className="w-fit h-[284px] overflow-hidden p-0 border-none gap-0 cursor-pointer flex flex-col"
       onClick={() => navigate(`/product/${product._id}`)}>
       <div className="w-[180px] h-[180px] overflow-hidden">
-        <img
+        <LazyImage
           src={product.productImages[0]}
           alt={product.productName}
           className="w-full h-full object-cover"
+          placeholder={<ImageSkeleton />}
         />
       </div>
       <CardContent className="flex flex-col w-[180px] p-2 justify-between flex-1">

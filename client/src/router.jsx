@@ -1,32 +1,35 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import Loading from './components/common/loading/Loading';
+
 import RootLayout from './components/layouts/RootLayout';
-import Home from './pages/Home';
-import Auth from './pages/Auth';
 import AuthLayout from './components/layouts/AuthLayout';
+import SidebarLayout from './components/layouts/SidebarLayout';
+
+import Auth from './pages/Auth';
 import Register from './components/features/auth/components/Register';
 import ResetPassword from './components/features/auth/components/ResetPassword';
-import Product from './pages/Product';
-import SidebarLayout from './components/layouts/SidebarLayout';
-import Addresses from './pages/Addresses';
-import Dashboard from './pages/admin/Dashboard';
-import AdminLayout from './pages/admin/AdminLayout';
-import ProductTable from './pages/admin/product-management/ProductTable';
-import UserTable from './pages/admin/user-management/UserTable';
-import Profile from './pages/Profile';
-import Cart from './pages/Cart';
-import Wishlist from './pages/Wishlist';
+
+const Home = lazy(() => import('./pages/Home'));
+const Product = lazy(() => import('./pages/Product'));
+const Cart = lazy(() => import('./pages/Cart'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
+const PageNotFound = lazy(() => import('./pages/PageNotFound'));
+const Forbidden = lazy(() => import('./pages/Forbidden'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Addresses = lazy(() => import('./pages/Addresses'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
+const ProductTable = lazy(() => import('./pages/admin/product-management/ProductTable'));
+const UserTable = lazy(() => import('./pages/admin/user-management/UserTable'));
+
+const lazyWrapper = (LazyComponent) => (
+  <Suspense fallback={<Loading />}>
+    <LazyComponent />
+  </Suspense>
+);
 
 export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <RootLayout />,
-    children: [
-      { index: true, element: <Home /> },
-      { path: '/product/:id', element: <Product /> },
-      { path: '/cart', element: <Cart /> },
-      { path: '/wishlist', element: <Wishlist /> }
-    ]
-  },
   {
     path: '/auth',
     element: <AuthLayout />,
@@ -37,22 +40,34 @@ export const router = createBrowserRouter([
     ]
   },
   {
+    path: '/',
+    element: <RootLayout />,
+    children: [
+      { index: true, element: lazyWrapper(Home) },
+      { path: '/product/:id', element: lazyWrapper(Product) },
+      { path: '/cart', element: lazyWrapper(Cart) },
+      { path: '/wishlist', element: lazyWrapper(Wishlist) },
+      { path: '*', element: lazyWrapper(PageNotFound) },
+      { path: '/forbidden', element: lazyWrapper(Forbidden) }
+    ]
+  },
+  {
     path: '/account',
     element: <SidebarLayout />,
-    children: [{ index: true, element: <Profile /> }]
+    children: [{ index: true, element: lazyWrapper(Profile) }]
   },
   {
     path: '/addresses',
     element: <SidebarLayout />,
-    children: [{ index: true, element: <Addresses /> }]
+    children: [{ index: true, element: lazyWrapper(Addresses) }]
   },
   {
     path: '/admin',
     element: <AdminLayout />,
     children: [
-      { index: true, element: <Dashboard /> },
-      { path: 'users', element: <UserTable /> },
-      { path: 'products', element: <ProductTable /> }
+      { index: true, element: lazyWrapper(Dashboard) },
+      { path: 'users', element: lazyWrapper(UserTable) },
+      { path: 'products', element: lazyWrapper(ProductTable) }
     ]
   }
 ]);

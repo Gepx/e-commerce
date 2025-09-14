@@ -55,7 +55,7 @@ const DesktopNav = ({ user }) => (
             to="/account"
             className="flex items-center gap-2 hover:bg-gray-400/30 p-2 rounded-md transition">
             <CircleUserRound />
-            <span>Egip</span>
+            <span>{user?.username || user?.email}</span>
           </Link>
         </NavigationMenuLink>
       </NavigationMenuItem>

@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { User } from 'lucide-react';
 import { useProfileContext } from '@/components/features/profile/context/ProfileContext';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const ProfilePictureSection = () => {
   const { user, uploading, removing, onFileChange, onRemoveAvatar } = useProfileContext();
@@ -15,10 +17,11 @@ const ProfilePictureSection = () => {
         <h4 className="text-md font-semibold">Profile Picture</h4>
         <div className="flex flex-row items-center gap-3">
           {user?.avatarUrl ? (
-            <img
+            <LazyImage
               src={user.avatarUrl}
               alt="Avatar"
               className="h-16 w-16 rounded-full border object-cover"
+              placeholder={<ImageSkeleton />}
             />
           ) : (
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-200">

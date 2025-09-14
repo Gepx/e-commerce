@@ -17,6 +17,8 @@ import { Badge } from '@/components/ui/badge';
 import { Eye, User } from 'lucide-react';
 import { useState } from 'react';
 import InfoField from '@/components/common/info-field/InfoField';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const DetailUserDialog = ({ user }) => {
   const [open, setOpen] = useState(false);
@@ -60,10 +62,11 @@ const DetailUserDialog = ({ user }) => {
           {/* Profile Details */}
           <div className="flex items-center space-x-4">
             {user?.avatarUrl ? (
-              <img
+              <LazyImage
                 src={user.avatarUrl}
                 alt="Avatar"
                 className="h-16 w-16 rounded-full border object-cover"
+                placeholder={<ImageSkeleton />}
               />
             ) : (
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-200">

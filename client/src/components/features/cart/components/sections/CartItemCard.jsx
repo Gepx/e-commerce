@@ -9,6 +9,8 @@ import {
   formatPrice
 } from '@/components/features/shared/utils/productUtils';
 import { useCartContext } from '@/components/features/cart/context/CartContext';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const CartItemCard = ({ item }) => {
   const { selectedItems, toggleSelectItem, updateItemQuantity, removeItem, itemTotals } =
@@ -27,10 +29,11 @@ const CartItemCard = ({ item }) => {
 
       <TableCell>
         <div className="flex items-center gap-4">
-          <img
+          <LazyImage
             src={item.product.productImages[0]}
             alt={item.product.productName}
             className="w-16 h-16 object-cover rounded-md"
+            placeholder={<ImageSkeleton />}
           />
           <div className="flex flex-col">
             <h3 className="font-medium">{item.product.productName}</h3>

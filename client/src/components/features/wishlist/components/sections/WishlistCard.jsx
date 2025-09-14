@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Trash } from 'lucide-react';
 import { getMatchedVariation, formatPrice } from '@/components/features/shared/utils/productUtils';
 import { useWishlistContext } from '@/components/features/wishlist/context/WishlistContext';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const WishlistCard = ({ item }) => {
   const { removeWishlistItem, navigateToProduct } = useWishlistContext();
@@ -17,10 +19,11 @@ const WishlistCard = ({ item }) => {
       <CardContent className="px-4">
         <div className="relative flex flex-col sm:flex-row gap-4">
           <div className="w-full sm:w-48 h-40 sm:h-full cursor-pointer bg-gray-100 flex-shrink-0">
-            <img
+            <LazyImage
               src={item.product.productImages[0]}
               alt={item.product.productName}
               className="w-full h-full object-cover rounded-lg"
+              placeholder={<ImageSkeleton />}
             />
           </div>
 
