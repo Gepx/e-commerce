@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useMemo } from 'react';
-import { debounce } from 'lodash/debounce';
+import { debounce } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import wishlistService from '@/components/features/wishlist/services/wishlistService';
