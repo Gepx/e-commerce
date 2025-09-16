@@ -18,7 +18,8 @@ const EMPTY_ADDRESS = {
 const useAddresses = () => {
   const [searchParams] = useSearchParams();
   const [addresses, setAddresses] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [dialogValues, setDialogValues] = useState(EMPTY_ADDRESS);
@@ -26,15 +27,17 @@ const useAddresses = () => {
   const defaultAddress = useMemo(() => addresses.find((a) => a.isDefault) || null, [addresses]);
 
   const loadAddresses = useCallback(async () => {
-    setLoading(true);
+    setIsLoading(true);
+    setIsError(null);
     try {
       const res = await addressService.getUserAddresses();
       setAddresses(res.addresses || []);
     } catch (error) {
       toast.error(error?.message || 'Failed to load addresses');
       setAddresses([]);
+      setIsError(error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }, []);
 
@@ -147,7 +150,8 @@ const useAddresses = () => {
   return {
     addresses,
     defaultAddress,
-    loading,
+    isLoading,
+    isError,
     dialogOpen,
     editingId,
     dialogValues,

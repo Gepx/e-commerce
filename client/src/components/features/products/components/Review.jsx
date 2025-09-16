@@ -1,6 +1,8 @@
 import { Card, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ChevronDown, ChevronUp, FilterIcon, Star } from 'lucide-react';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const Review = ({ ratingOpen, setRatingOpen, reviews }) => {
   return (
@@ -47,10 +49,11 @@ const Review = ({ ratingOpen, setRatingOpen, reviews }) => {
             {reviews.map((r) => (
               <div key={r.id} className="border-b pb-3 last:border-0 last:pb-0">
                 <div className="flex items-center gap-2">
-                  <img
+                  <LazyImage
                     src={`https://i.pravatar.cc/80?img=${(r.id % 70) + 1}`}
                     alt={r.name}
                     className="w-10 h-10 rounded-full"
+                    placeholder={<ImageSkeleton />}
                   />
                   <div className="text-xs">
                     <p className="font-bold">{r.name}</p>

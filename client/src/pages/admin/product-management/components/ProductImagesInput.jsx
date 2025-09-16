@@ -2,6 +2,8 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const ProductImagesInput = ({
   form,
@@ -33,10 +35,11 @@ const ProductImagesInput = ({
             <div className="flex flex-wrap gap-2 mt-2">
               {imagePreviews.map((img, index) => (
                 <div key={index} className="relative">
-                  <img
+                  <LazyImage
                     src={img.preview}
                     alt={`Preview ${index + 1}`}
                     className="w-20 h-20 object-cover rounded border"
+                    placeholder={<ImageSkeleton />}
                   />
                   <Button
                     type="button"

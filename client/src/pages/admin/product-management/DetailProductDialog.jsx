@@ -17,6 +17,8 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const DetailProductDialog = ({ product }) => {
   const [open, setOpen] = useState(false);
@@ -71,11 +73,12 @@ const DetailProductDialog = ({ product }) => {
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {images.length ? (
                   images.map((src, idx) => (
-                    <img
+                    <LazyImage
                       key={idx}
                       src={src}
                       alt={`Image ${idx + 1}`}
                       className="h-20 w-20 md:h-24 md:w-24 object-cover rounded-md border"
+                      placeholder={<ImageSkeleton />}
                     />
                   ))
                 ) : (

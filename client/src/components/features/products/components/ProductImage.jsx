@@ -1,6 +1,8 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const ProductImage = ({
   onMainTouchStart,
@@ -24,10 +26,11 @@ const ProductImage = ({
           className="p-0 m-0 overflow-hidden aspect-[4/3]"
           onTouchStart={onMainTouchStart}
           onTouchEnd={onMainTouchEnd}>
-          <img
+          <LazyImage
             src={productImages[currentImg]}
             alt={productName}
             className="w-full h-full object-cover"
+            placeholder={<ImageSkeleton />}
           />
         </Card>
         {/* Mobile/Medium overlay arrows */}
@@ -63,11 +66,12 @@ const ProductImage = ({
                   ? 'ring-2 ring-blue-500'
                   : 'ring-transparent hover:ring-blue-300'
               }`}>
-              <img
+              <LazyImage
                 src={img}
                 alt={`Image ${i + startIndex + 1}`}
                 onClick={() => setCurrentImg(i + startIndex)}
                 className={'w-full h-full object-cover cursor-pointer'}
+                placeholder={<ImageSkeleton />}
               />
             </Card>
           ))}

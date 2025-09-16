@@ -36,7 +36,7 @@ const MobileNav = ({ user }) => (
         to="/account"
         className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">
         <CircleUserRound className="w-5 h-5" />
-        <span className="font-medium">Profile</span>
+        <span className="font-medium">{user?.firstName || user?.email}</span>
       </Link>
       <div className="flex items-center gap-2 border border-gray-300 rounded-md my-4 mx-2 p-2 w-[calc(100%-1rem)] sm:hidden">
         <SearchIcon className="text-gray-500" />

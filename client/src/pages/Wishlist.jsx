@@ -4,6 +4,8 @@ import {
 } from '@/components/features/wishlist/context/WishlistContext';
 import WishlistItem from '@/components/features/wishlist/components/WishlistItem';
 import { Loader2 } from 'lucide-react';
+import { Suspense } from 'react';
+import Loading from '@/components/common/loading/Loading';
 
 const WishlistContent = () => {
   const { isLoading, isError } = useWishlistContext();
@@ -30,7 +32,9 @@ const WishlistContent = () => {
 const Wishlist = () => {
   return (
     <WishlistProvider>
-      <WishlistContent />
+      <Suspense fallback={<Loading />}>
+        <WishlistContent />
+      </Suspense>
     </WishlistProvider>
   );
 };

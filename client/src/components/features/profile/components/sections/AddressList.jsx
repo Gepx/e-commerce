@@ -2,11 +2,13 @@ import { Button } from '@/components/ui/button';
 import AddressCard from './AddressCard';
 import AddressDialog from '@/components/features/profile/components/AddressDialog';
 import { useProfileContext } from '@/components/features/profile/context/ProfileContext';
+import { Loader2 } from 'lucide-react';
 
 const AddressList = () => {
   const {
     addresses,
-    loading,
+    isLoading,
+    isError,
     dialogOpen,
     editingId,
     dialogValues,
@@ -17,6 +19,27 @@ const AddressList = () => {
     setAsDefault,
     deleteAddress
   } = useProfileContext();
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[400px]">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        Loading Addresses...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[400px] text-center">
+        <AlertTriangle className="h-10 w-10 text-red-500 mb-4" />
+        <h3 className="text-lg font-semibold text-red-600">Failed to Load Addresses</h3>
+        <p className="text-muted-foreground">
+          {isError.message || 'Please try refreshing the page.'}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <section className="p-4 space-y-6">
@@ -30,7 +53,7 @@ const AddressList = () => {
       </div>
 
       <div className="text-center">
-        {!loading && addresses.length === 0 && (
+        {!isLoading && addresses.length === 0 && (
           <p className="text-sm text-muted-foreground">No addresses set.</p>
         )}
       </div>

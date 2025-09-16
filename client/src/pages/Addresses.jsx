@@ -1,10 +1,15 @@
 import { ProfileProvider } from '@/components/features/profile/context/ProfileContext';
-import Address from '@/components/features/profile/components/Address';
+import Loading from '@/components/common/loading/Loading';
+import { lazy, Suspense } from 'react';
+
+const Address = lazy(() => import('@/components/features/profile/components/Address'));
 
 const Addresses = () => {
   return (
     <ProfileProvider>
-      <Address />
+      <Suspense fallback={<Loading />}>
+        <Address />
+      </Suspense>
     </ProfileProvider>
   );
 };

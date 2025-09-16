@@ -11,6 +11,8 @@ import AddProductDialog from './AddProductDialog';
 import DeleteWrapper from '@/components/common/alert-wrapper/delete-wrapper';
 import EditProductDialog from './EditProductDialog';
 import DetailProductDialog from './DetailProductDialog';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
+import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
 
 const ProductTable = memo(() => {
   const queryClient = useQueryClient();
@@ -63,10 +65,11 @@ const ProductTable = memo(() => {
         cell: ({ row }) => {
           const img = row.original.productImages?.[0];
           return img ? (
-            <img
+            <LazyImage
               src={img}
               alt={row.original.productName}
               className="h-10 w-10 object-cover rounded"
+              placeholder={<ImageSkeleton />}
             />
           ) : (
             <span className="text-muted-foreground">No image</span>

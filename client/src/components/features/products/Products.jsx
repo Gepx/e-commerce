@@ -2,9 +2,11 @@ import { Loader2 } from 'lucide-react';
 import useProducts from '@/components/features/products/hooks/useProducts';
 import useProductFilters from '@/components/features/products/hooks/useProductFilters';
 import usePagination from '@/components/features/products/hooks/usePagination';
-import ProductFilters from '@/components/features/products/components/ProductFilters';
-import ProductGrid from '@/components/features/products/components/ProductGrid';
-import PaginationComponent from '@/components/common/pagination/Pagination';
+import { lazy, Suspense } from 'react';
+
+const ProductFilters = lazy(() => import('./components/ProductFilters'));
+const ProductGrid = lazy(() => import('./components/ProductGrid'));
+const PaginationComponent = lazy(() => import('@/components/common/pagination/Pagination'));
 
 const Products = () => {
   const { data: products, isLoading, isError } = useProducts();
@@ -34,26 +36,28 @@ const Products = () => {
 
   return (
     <div className="w-[calc(95%-1rem)] md:w-[95%] mx-auto flex flex-col md:grid grid-cols-1 md:grid-cols-5 gap-2">
-      <ProductFilters
-        categories={categories}
-        selectedCategories={selectedCategories}
-        priceRange={priceRange}
-        selectedRatings={selectedRatings}
-        onToggleCategory={toggleCategory}
-        onUpdatePriceRange={updatePriceRange}
-        onToggleRating={toggleRating}
-        onClearFilters={clearFilters}
-      />
-
-      <ProductGrid products={paginatedProducts} />
-
-      <div className="col-span-5 flex justify-center mb-10">
-        <PaginationComponent
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
+      <Suspense fallback={<Loader2 className="w-10 h-10 animate-spin" />}>
+        <ProductFilters
+          categories={categories}
+          selectedCategories={selectedCategories}
+          priceRange={priceRange}
+          selectedRatings={selectedRatings}
+          onToggleCategory={toggleCategory}
+          onUpdatePriceRange={updatePriceRange}
+          onToggleRating={toggleRating}
+          onClearFilters={clearFilters}
         />
-      </div>
+
+        <ProductGrid products={paginatedProducts} />
+
+        <div className="col-span-5 flex justify-center mb-10">
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      </Suspense>
     </div>
   );
 };
