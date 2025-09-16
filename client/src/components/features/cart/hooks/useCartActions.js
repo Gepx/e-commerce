@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useMemo } from 'react';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash/debounce';
 import cartService from '@/components/features/cart/services/cartService';
 
 const useCartActions = () => {
