@@ -10,7 +10,7 @@ import {
 } from '@/components/features/shared/utils/productUtils';
 import { useCartContext } from '@/components/features/cart/context/CartContext';
 import LazyImage from '@/components/common/lazy-loading/LazyImage';
-import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
+import { ImageSkeleton } from '@/components/common/skeleton/ImageSkeleton';
 
 const CartItemCard = ({ item }) => {
   const { selectedItems, toggleSelectItem, updateItemQuantity, removeItem, itemTotals } =
