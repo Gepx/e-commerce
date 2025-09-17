@@ -1,19 +1,15 @@
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/common/sidebar/app-sidebar';
-import AlertWrapper from '@/components/common/alert-wrapper/alert-wrapper';
 import { useAuth } from '@/context/AuthContext';
 import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 
 export default function AdminLayout() {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/auth');
-  };
+  if (!loading && (!user || user.role !== 'admin')) {
+    return <Navigate to="/forbidden" replace />;
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -26,21 +22,6 @@ export default function AdminLayout() {
                 <SidebarTrigger className="cursor-pointer" />
                 <Separator orientation="vertical" className="mr-2 h-4" />
               </div>
-
-              <AlertWrapper
-                onAction={handleLogout}
-                title="Are You Sure?"
-                description="You will be logged out from the system after you click Log Out button"
-                actionText="Log Out"
-                cancelText="Cancel"
-                actionClassName="bg-red-500 cursor-pointer hover:bg-red-600">
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="bg-red-500 cursor-pointer hover:bg-red-600">
-                  Log Out
-                </Button>
-              </AlertWrapper>
             </div>
           </header>
 
