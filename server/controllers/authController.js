@@ -2,6 +2,8 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cacheService from "../services/cacheService.js";
+import { sendOtpEmail } from "../services/userServices.js";
+import notificationService from "../services/notificationService.js";
 
 const register = async (req, res) => {
   try {
@@ -21,8 +23,17 @@ const register = async (req, res) => {
       password: hashedPassword,
       role: role || "user",
     });
-
     await newUser.save();
+
+    try {
+      await notificationService.createWelcomeNotification(
+        newUser._id,
+        newUser.username
+      );
+    } catch (error) {
+      console.error("Failed to create welcome notification:", error.message);
+    }
+
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -144,13 +155,15 @@ const forgotPassword = async (req, res) => {
 
     await user.save({ validateBeforeSave: false });
 
-    const payload = { message: "If that email exists, an OTP was sent" };
-
-    if (process.env.NODE_ENV !== "production") {
-      payload.devOtp = otp;
+    try {
+      await sendOtpEmail(user.email, otp);
+    } catch (e) {
+      console.error("Failed to send OTP email:", e.message);
     }
 
-    return res.status(200).json(payload);
+    return res
+      .status(200)
+      .json({ message: "If that email exists, an OTP was sent" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
