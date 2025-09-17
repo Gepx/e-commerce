@@ -1,20 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-
-const newsletterService = {
-  subscribe: async (email) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (email.includes('error')) {
-          reject(new Error('Failed to subscribe'));
-        } else {
-          resolve({ message: 'Successfully subscribed!' });
-        }
-      }, 1000);
-    });
-  }
-};
+import api from '@/lib/api';
 
 const useNewsletter = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,15 +10,14 @@ const useNewsletter = () => {
     defaultValues: { email: '' }
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async ({ email }) => {
     setIsSubmitting(true);
-
     try {
-      await newsletterService.subscribe(data.email);
-      toast.success('Successfully subscribed to newsletter!');
+      await api.post('/newsletter/subscribe', { email });
+      toast.success('Thanks! You are subscribed.');
       form.reset();
     } catch (error) {
-      toast.error(error.message || 'Failed to subscribe');
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to subscribe');
     } finally {
       setIsSubmitting(false);
     }
