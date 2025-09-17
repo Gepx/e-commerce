@@ -6,6 +6,8 @@ import {
   calcTotalAmount,
   createSnapAndPersist,
 } from "../utils/transactionHelper.js";
+import midtransClient from "midtrans-client";
+import notificationService from "./notificationService.js";
 
 const createTransService = async (userId, customerDetails) => {
   const userCart = await Cart.findOne({ user: userId }).populate(
@@ -38,6 +40,9 @@ const createTransService = async (userId, customerDetails) => {
   const transactionItems = itemsToProcess.map((item) => ({
     productId: item.product._id,
     productName: item.product.productName,
+    image: Array.isArray(item.product.productImages)
+      ? item.product.productImages[0]
+      : null,
     price: item.price,
     quantity: item.quantity,
   }));
@@ -92,6 +97,9 @@ const createDirectBuyTransService = async (userId, customerDetails, items) => {
       return {
         productId: product._id,
         productName: product.productName,
+        image: Array.isArray(product.productImages)
+          ? product.productImages[0]
+          : null,
         price: item.price,
         quantity: item.quantity,
       };
@@ -137,6 +145,36 @@ const getTransService = async (
     Transaction.find(query).sort({ createdAt: -1 }).skip(offset).limit(limit),
     Transaction.countDocuments(query),
   ]);
+
+  if (transactions.length) {
+    const core = new midtransClient.CoreApi({
+      isProduction: false,
+      serverKey: process.env.MIDTRANS_SERVER_KEY,
+    });
+    await Promise.all(
+      transactions.map(async (tx) => {
+        if (tx.status === "pending") {
+          try {
+            const statusResp = await core.transaction.status(tx.orderId);
+            let newStatus = statusResp.transaction_status;
+            if (
+              newStatus === "capture" &&
+              statusResp.fraud_status === "accept"
+            ) {
+              newStatus = "settlement";
+            }
+            if (newStatus && newStatus !== tx.status) {
+              tx.status = newStatus;
+              await Transaction.updateOne(
+                { _id: tx._id },
+                { status: newStatus }
+              );
+            }
+          } catch (_) {}
+        }
+      })
+    );
+  }
 
   return { transactions, total };
 };
@@ -186,6 +224,20 @@ const updateTransStatusService = async (midtransNotification) => {
       );
     } catch (error) {
       console.error("Failed to remove items from cart:", error);
+    }
+  }
+
+  if (status === "settlement") {
+    try {
+      const itemCount = updated.items.length;
+      await notificationService.createPurchaseNotification(
+        updated.user,
+        updated.orderId,
+        updated.totalAmount,
+        itemCount
+      );
+    } catch (error) {
+      console.error("Failed to create purchase notification:", error.message);
     }
   }
 

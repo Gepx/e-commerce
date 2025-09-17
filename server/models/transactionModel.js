@@ -11,6 +11,10 @@ const TransactionItemSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      default: null,
+    },
     price: {
       type: Number,
       required: true,

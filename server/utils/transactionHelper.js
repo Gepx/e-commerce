@@ -10,6 +10,7 @@ export function toTransactionItems(rawItems) {
   return rawItems.map((item) => ({
     productId: item.productId,
     productName: item.productName,
+    image: item.image ?? item.productImage ?? null,
     price: item.price,
     quantity: item.quantity,
   }));
