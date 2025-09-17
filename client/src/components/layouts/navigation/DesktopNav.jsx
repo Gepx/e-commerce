@@ -4,8 +4,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList
 } from '@radix-ui/react-navigation-menu';
-import { Bell, CircleUserRound, Heart, ShieldUser, ShoppingCart } from 'lucide-react';
+import { CircleUserRound, Heart, ShieldUser, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import NotificationBell from '../../features/notifications/components/NotificationBell.jsx';
 
 const DesktopNav = ({ user }) => (
   <NavigationMenu>
@@ -27,7 +28,7 @@ const DesktopNav = ({ user }) => (
           <Link
             to="/wishlist"
             className="flex items-center gap-2 hover:bg-gray-400/30 p-2 rounded-md transition">
-            <Heart className="hover:fill-red-700 transition-all duration-200" />
+            <Heart className="w-6 h-6 hover:fill-red-700 transition-all duration-200" />
           </Link>
         </NavigationMenuLink>
       </NavigationMenuItem>
@@ -36,19 +37,15 @@ const DesktopNav = ({ user }) => (
           <Link
             to="/cart"
             className="flex items-center gap-2 hover:bg-gray-400/30 p-2 rounded-md transition">
-            <ShoppingCart />
+            <ShoppingCart className="w-6 h-6" />
           </Link>
         </NavigationMenuLink>
       </NavigationMenuItem>
-      <NavigationMenuItem>
-        <NavigationMenuLink asChild>
-          <Link
-            to="/notification"
-            className="flex items-center gap-2 hover:bg-gray-400/30 p-2 rounded-md transition">
-            <Bell />
-          </Link>
-        </NavigationMenuLink>
-      </NavigationMenuItem>
+      {user && (
+        <NavigationMenuItem className="flex items-center gap-2 hover:bg-gray-400/30 rounded-md transition">
+          <NotificationBell />
+        </NavigationMenuItem>
+      )}
       <NavigationMenuItem>
         <NavigationMenuLink asChild>
           <Link

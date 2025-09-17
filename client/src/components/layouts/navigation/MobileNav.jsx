@@ -1,7 +1,6 @@
 import { Bell, CircleUserRound, Heart, SearchIcon, ShieldUser, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Input } from '../../ui/input';
-import { Button } from '@/components/ui/button';
 
 const MobileNav = ({ user }) => (
   <>
@@ -26,12 +25,14 @@ const MobileNav = ({ user }) => (
         <ShoppingCart className="w-5 h-5" />
         <span className="font-medium">Cart</span>
       </Link>
-      <Link
-        to="/notification"
-        className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">
-        <Bell className="w-5 h-5" />
-        <span className="font-medium">Notifications</span>
-      </Link>
+      {user && (
+        <Link
+          to="/notifications"
+          className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">
+          <Bell className="w-5 h-5" />
+          <span className="font-medium">Notifications</span>
+        </Link>
+      )}
       <Link
         to="/account"
         className="flex items-center gap-3 hover:bg-gray-50 py-4 px-4 w-full border-b border-gray-100 transition-colors duration-200">
