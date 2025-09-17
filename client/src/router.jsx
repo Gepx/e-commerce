@@ -1,6 +1,8 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import Loading from './components/common/loading/Loading';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 import RootLayout from './components/layouts/RootLayout';
 import AuthLayout from './components/layouts/AuthLayout';
@@ -18,6 +20,8 @@ const PageNotFound = lazy(() => import('./pages/PageNotFound'));
 const Forbidden = lazy(() => import('./pages/Forbidden'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Addresses = lazy(() => import('./pages/Addresses'));
+const Notifications = lazy(() => import('./pages/Notifications'));
+const OrderHistory = lazy(() => import('./pages/OrderHistory'));
 const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
 const ProductTable = lazy(() => import('./pages/admin/product-management/ProductTable'));
@@ -28,6 +32,18 @@ const lazyWrapper = (LazyComponent) => (
     <LazyComponent />
   </Suspense>
 );
+
+const RequireAuth = () => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) return <Loading />;
+  if (!user) {
+    toast.info('Please log in to continue');
+    return <Navigate to="/auth" replace state={{ from: location }} />;
+  }
+  return <Outlet />;
+};
 
 export const router = createBrowserRouter([
   {
@@ -44,30 +60,67 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: lazyWrapper(Home) },
-      { path: '/product/:id', element: lazyWrapper(Product) },
-      { path: '/cart', element: lazyWrapper(Cart) },
-      { path: '/wishlist', element: lazyWrapper(Wishlist) },
+      {
+        element: <RequireAuth />,
+        children: [
+          { path: '/product/:id', element: lazyWrapper(Product) },
+          { path: '/cart', element: lazyWrapper(Cart) },
+          { path: '/wishlist', element: lazyWrapper(Wishlist) }
+        ]
+      },
       { path: '*', element: lazyWrapper(PageNotFound) },
       { path: '/forbidden', element: lazyWrapper(Forbidden) }
     ]
   },
   {
     path: '/account',
-    element: <SidebarLayout />,
-    children: [{ index: true, element: lazyWrapper(Profile) }]
+    element: <RequireAuth />,
+    children: [
+      {
+        element: <SidebarLayout />,
+        children: [{ index: true, element: lazyWrapper(Profile) }]
+      }
+    ]
   },
   {
     path: '/addresses',
-    element: <SidebarLayout />,
-    children: [{ index: true, element: lazyWrapper(Addresses) }]
+    element: <RequireAuth />,
+    children: [
+      { element: <SidebarLayout />, children: [{ index: true, element: lazyWrapper(Addresses) }] }
+    ]
+  },
+  {
+    path: '/notifications',
+    element: <RequireAuth />,
+    children: [
+      {
+        element: <SidebarLayout />,
+        children: [{ index: true, element: lazyWrapper(Notifications) }]
+      }
+    ]
+  },
+  {
+    path: '/order-history',
+    element: <RequireAuth />,
+    children: [
+      {
+        element: <SidebarLayout />,
+        children: [{ index: true, element: lazyWrapper(OrderHistory) }]
+      }
+    ]
   },
   {
     path: '/admin',
-    element: <AdminLayout />,
+    element: <RequireAuth />,
     children: [
-      { index: true, element: lazyWrapper(Dashboard) },
-      { path: 'users', element: lazyWrapper(UserTable) },
-      { path: 'products', element: lazyWrapper(ProductTable) }
+      {
+        element: <AdminLayout />,
+        children: [
+          { index: true, element: lazyWrapper(Dashboard) },
+          { path: 'users', element: lazyWrapper(UserTable) },
+          { path: 'products', element: lazyWrapper(ProductTable) }
+        ]
+      }
     ]
   }
 ]);
