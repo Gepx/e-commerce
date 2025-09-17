@@ -18,11 +18,17 @@ import TransactionRoutes from "./routes/transactionRoutes.js";
 import NotificationRoutes from "./routes/notificationRoutes.js";
 import NewsletterRoutes from "./routes/newsletterRoutes.js";
 import { limiter } from "./utils/rateLimiter.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.resolve(__dirname, "../client/dist")));
 
 app.use(
   cors({
@@ -48,6 +54,10 @@ app.use("/api/user/wishlist", WishlistRoutes);
 app.use("/api/user/transactions", TransactionRoutes);
 app.use("/api/user/notifications", NotificationRoutes);
 app.use("/api/newsletter", NewsletterRoutes);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/dist", "index.html"));
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
