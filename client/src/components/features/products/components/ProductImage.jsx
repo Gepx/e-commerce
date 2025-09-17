@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import LazyImage from '@/components/common/lazy-loading/LazyImage';
-import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
+import { ImageSkeleton } from '@/components/common/skeleton/ImageSkeleton';
 
 const ProductImage = ({
   onMainTouchStart,

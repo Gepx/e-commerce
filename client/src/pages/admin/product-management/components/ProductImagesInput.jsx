@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import LazyImage from '@/components/common/lazy-loading/LazyImage';
-import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
+import { ImageSkeleton } from '@/components/common/skeleton/ImageSkeleton';
 
 const ProductImagesInput = ({
   form,

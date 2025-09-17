@@ -9,7 +9,7 @@ import {
 import { Card, CardContent } from '../ui/card';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import LazyImage from '../common/lazy-loading/lazyImage';
-import { ImageSkeleton } from '../common/skeleton/imageSkeleton';
+import { ImageSkeleton } from '../common/skeleton/ImageSkeleton';
 
 const bannerImages = [
   {

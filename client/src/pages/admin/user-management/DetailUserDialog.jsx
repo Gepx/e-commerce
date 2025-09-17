@@ -18,7 +18,7 @@ import { Eye, User } from 'lucide-react';
 import { useState } from 'react';
 import InfoField from '@/components/common/info-field/InfoField';
 import LazyImage from '@/components/common/lazy-loading/LazyImage';
-import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
+import { ImageSkeleton } from '@/components/common/skeleton/ImageSkeleton';
 
 const DetailUserDialog = ({ user }) => {
   const [open, setOpen] = useState(false);

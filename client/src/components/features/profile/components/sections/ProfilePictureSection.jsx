@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { User } from 'lucide-react';
 import { useProfileContext } from '@/components/features/profile/context/ProfileContext';
 import LazyImage from '@/components/common/lazy-loading/LazyImage';
-import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
+import { ImageSkeleton } from '@/components/common/skeleton/ImageSkeleton';
 
 const ProfilePictureSection = () => {
   const { user, uploading, removing, onFileChange, onRemoveAvatar } = useProfileContext();

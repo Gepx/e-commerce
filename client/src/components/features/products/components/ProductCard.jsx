@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import LazyImage from '@/components/common/lazy-loading/LazyImage';
-import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
+import { ImageSkeleton } from '@/components/common/skeleton/ImageSkeleton';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();

@@ -12,7 +12,7 @@ import DeleteWrapper from '@/components/common/alert-wrapper/delete-wrapper';
 import EditProductDialog from './EditProductDialog';
 import DetailProductDialog from './DetailProductDialog';
 import LazyImage from '@/components/common/lazy-loading/LazyImage';
-import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
+import { ImageSkeleton } from '@/components/common/skeleton/ImageSkeleton';
 
 const ProductTable = memo(() => {
   const queryClient = useQueryClient();

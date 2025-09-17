@@ -2,7 +2,7 @@ import { Card, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ChevronDown, ChevronUp, FilterIcon, Star } from 'lucide-react';
 import LazyImage from '@/components/common/lazy-loading/LazyImage';
-import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
+import { ImageSkeleton } from '@/components/common/skeleton/ImageSkeleton';
 
 const Review = ({ ratingOpen, setRatingOpen, reviews }) => {
   return (
