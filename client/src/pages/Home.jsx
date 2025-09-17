@@ -1,5 +1,5 @@
 import React from 'react';
-import Banner from '@/components/home/Banner';
+import Banner from '@/components/home/banner';
 import Footer from '@/components/home/Footer';
 import Products from '@/components/features/products/Products';
 import Loading from '@/components/common/loading/Loading';
