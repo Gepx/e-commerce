@@ -82,7 +82,7 @@ const ResetWithEmailOtp = () => {
           {step === 2 && (
             <Form {...otpForm}>
               <form onSubmit={verifyOtp} className="space-y-4">
-                {devOtp && <p className="text-sm text-muted-foreground">DEV OTP: {devOtp}</p>}
+                {/* Dev OTP no longer shown; email is used */}
                 <FormField
                   control={otpForm.control}
                   name="email"

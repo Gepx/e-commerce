@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { emailOnlySchema, verifyOtpSchema, resetPasswordSchema } from '@shared';
+import {
+  emailOnlySchema,
+  verifyOtpSchema,
+  resetPasswordSchema,
+  resetPasswordConfirmSchema
+} from '@shared';
 import authService from '@/components/features/auth/services/authService';
 
 const usePasswordReset = () => {
@@ -23,7 +28,7 @@ const usePasswordReset = () => {
   });
 
   const passwordForm = useForm({
-    resolver: zodResolver(resetPasswordSchema),
+    resolver: zodResolver(resetPasswordConfirmSchema),
     defaultValues: { newPassword: '', confirmPassword: '' }
   });
 
@@ -33,8 +38,8 @@ const usePasswordReset = () => {
       const res = await authService.requestPasswordOtp(data.email);
       setEmail(data.email);
       otpForm.reset({ email: data.email, otp: '' });
-
-      if (res.devOtp) setDevOtp(res.devOtp);
+      setDevOtp(null);
+      toast.success('OTP request sent to your email');
       setStep(2);
     } catch (error) {
       emailForm.setError('email', { message: error.message });
@@ -61,7 +66,7 @@ const usePasswordReset = () => {
     try {
       await authService.resetPassword({ token: resetToken, newPassword: data.newPassword });
       setStep(4);
-      toast.success('Password reset successfully');
+      toast.success('Password successfully changed');
     } catch (error) {
       passwordForm.setError('newPassword', { message: error.message });
     } finally {
