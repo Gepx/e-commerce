@@ -1,4 +1,14 @@
-import { Home, UserRoundPen, MapPinHouse, History, Package, Users, BarChart3 } from 'lucide-react';
+import {
+  Home,
+  UserRoundPen,
+  MapPinHouse,
+  History,
+  Package,
+  Users,
+  BarChart3,
+  Bell,
+  LogOut
+} from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -9,9 +19,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { SidebarSeparator } from '../../ui/sidebar';
+import AlertWrapper from '../alert-wrapper/alert-wrapper';
 
 const profileMenuItems = [
   {
@@ -28,6 +39,11 @@ const profileMenuItems = [
     title: 'Address',
     url: '/addresses',
     icon: MapPinHouse
+  },
+  {
+    title: 'Notifications',
+    url: '/notifications',
+    icon: Bell
   },
   {
     title: 'Order History',
@@ -61,7 +77,8 @@ const adminMenuItems = [
 
 export function AppSidebar() {
   const location = useLocation();
-  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const { user, loading, logout } = useAuth();
   const isAdminPage = location.pathname.startsWith('/admin');
 
   if (loading) {
@@ -128,6 +145,28 @@ export function AppSidebar() {
               </div>
             </SidebarMenu>
           </SidebarGroupContent>
+
+          <div className="flex-shrink-0 p-2 border-0 overflow-x-hidden">
+            <AlertWrapper
+              onAction={async () => {
+                await logout();
+                navigate('/auth');
+              }}
+              title="Are You Sure?"
+              description="You will be logged out from the system after you click the Log Out button."
+              actionText="Log Out"
+              cancelText="Cancel"
+              actionClassName="bg-red-500 hover:bg-red-600">
+              <button
+                type="button"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/50 transition-colors">
+                <div className="flex items-center justify-center h-6 w-6 rounded-md bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                  <LogOut className="h-4 w-4" />
+                </div>
+                <span>Logout</span>
+              </button>
+            </AlertWrapper>
+          </div>
 
           {/* User Profile Section - Fixed at bottom */}
           <div className="flex-shrink-0 p-2 border-t border-gray-200 dark:border-gray-700 overflow-x-hidden">
