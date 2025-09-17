@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Trash } from 'lucide-react';
 import { getMatchedVariation, formatPrice } from '@/components/features/shared/utils/productUtils';
 import { useWishlistContext } from '@/components/features/wishlist/context/WishlistContext';
-import LazyImage from '@/components/common/lazy-loading/LazyImage';
 import { ImageSkeleton } from '@/components/common/skeleton/imageSkeleton';
+import LazyImage from '@/components/common/lazy-loading/LazyImage';
 
 const WishlistCard = ({ item }) => {
   const { removeWishlistItem, navigateToProduct } = useWishlistContext();
