@@ -15,6 +15,8 @@ import AddressRoutes from "./routes/addressRoutes.js";
 import CartRoutes from "./routes/cartRoutes.js";
 import WishlistRoutes from "./routes/wishlistRoutes.js";
 import TransactionRoutes from "./routes/transactionRoutes.js";
+import NotificationRoutes from "./routes/notificationRoutes.js";
+import NewsletterRoutes from "./routes/newsletterRoutes.js";
 import { limiter } from "./utils/rateLimiter.js";
 
 const app = express();
@@ -44,6 +46,8 @@ app.use("/api/user/addresses", AddressRoutes);
 app.use("/api/user/cart", CartRoutes);
 app.use("/api/user/wishlist", WishlistRoutes);
 app.use("/api/user/transactions", TransactionRoutes);
+app.use("/api/user/notifications", NotificationRoutes);
+app.use("/api/newsletter", NewsletterRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
