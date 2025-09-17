@@ -8,7 +8,7 @@ import {
 } from '../ui/carousel';
 import { Card, CardContent } from '../ui/card';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import LazyImage from '../common/lazy-loading/lazyImage';
+import LazyImage from '../common/lazy-loading/LazyImage';
 import { ImageSkeleton } from '../common/skeleton/ImageSkeleton';
 
 const bannerImages = [
