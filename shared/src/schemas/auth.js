@@ -69,6 +69,14 @@ export const resetPasswordSchema = z.object({
     ),
 });
 
+export const resetPasswordConfirmSchema = resetPasswordSchema
+  .pick({ newPassword: true })
+  .extend({ confirmPassword: z.string() })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  });
+
 export const emailOnlySchema = z.object({
   email: z.string().email({ error: "Please enter a valid email address" }),
 });
