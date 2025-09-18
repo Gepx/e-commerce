@@ -49,6 +49,8 @@ app.use("/api/user/transactions", TransactionRoutes);
 app.use("/api/user/notifications", NotificationRoutes);
 app.use("/api/newsletter", NewsletterRoutes);
 
+app.get("/api/health", (req, res) => res.json({ ok: true }));
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Oops! Something went wrong!" });
