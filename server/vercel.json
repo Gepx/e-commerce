@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.js": {
+      "runtime": "nodejs22.x",
+      "memory": 1024,
+      "maxDuration": 10,
+      "includeFiles": ["../shared/**"]
+    }
+  },
+  "routes": [{ "src": "/api/(.*)", "dest": "api/index.js" }]
+}
