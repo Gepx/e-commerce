@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { loginSchema } from '@shared';
+import { loginSchema } from '@shared/schemas/auth';
 import { useAuth } from '@/context/AuthContext';
 
 const useLogin = () => {
