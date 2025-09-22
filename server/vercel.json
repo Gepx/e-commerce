@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "npm run build --workspace=server",
+  "installCommand": "npm install --legacy-peer-deps --no-package-lock",
   "builds": [
     {
       "src": "app.js",
