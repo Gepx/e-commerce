@@ -7,7 +7,7 @@ import {
   verifyOtpSchema,
   resetPasswordSchema,
   resetPasswordConfirmSchema
-} from '@shared';
+} from '@shared/schemas/auth';
 import authService from '@/components/features/auth/services/authService';
 
 const usePasswordReset = () => {
