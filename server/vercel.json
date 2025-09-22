@@ -2,11 +2,12 @@
   "version": 2,
   "functions": {
     "api/index.js": {
-      "runtime": "nodejs20.x",
+      "runtime": "nodejs22.x",
       "memory": 1024,
-      "maxDuration": 10,
-      "includeFiles": "../shared/**"
+      "maxDuration": 10
     }
   },
-  "routes": [{ "src": "/api/(.*)", "dest": "api/index.js" }]
+  "routes": [{ "src": "/(.*)", "dest": "api/app.js" }],
+  "installCommand": "npm install",
+  "buildCommand": "npm run build"
 }

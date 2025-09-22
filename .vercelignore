@@ -1,0 +1,5 @@
+node_modules/flatted/php/
+*.php
+.git/
+.env
+.env.local
