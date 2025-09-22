@@ -1,5 +1,5 @@
 import z from 'zod';
-import { productZodSchema } from '@shared';
+import { productZodSchema } from '@shared/schemas/productSchema.js';
 
 const productClientSchema = productZodSchema.extend({
   productImages: z.array(z.any()).min(1, 'At least one image is required'),
