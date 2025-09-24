@@ -1,8 +1,14 @@
 import mongoose from "mongoose";
-import { wishlistItemZodSchema as sharedWishlistItemSchema } from "../../shared/src/schemas/wishlist.js";
+import { z } from "zod";
 
-const wishlistItemZodSchema = sharedWishlistItemSchema.extend({
-  productId: sharedWishlistItemSchema.shape.productId.refine(
+const baseWishlistItemZodSchema = z.object({
+  productId: z.string().min(1, "Invalid product ID"),
+  selectedVariants: z.record(z.string()).default({}),
+  notifyWhenAvailable: z.boolean().optional().default(false),
+});
+
+const wishlistItemZodSchema = baseWishlistItemZodSchema.extend({
+  productId: baseWishlistItemZodSchema.shape.productId.refine(
     (val) => mongoose.Types.ObjectId.isValid(val),
     { message: "Invalid MongoDB ObjectId for product" }
   ),
