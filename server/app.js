@@ -6,7 +6,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
-import { connectRedis } from "./config/redis.js";
+import { connectRedis, CACHE_ENABLED } from "./config/redis.js";
 
 import AuthRoutes from "./routes/authRoutes.js";
 import UserRoutes from "./routes/userRoutes.js";
@@ -39,7 +39,7 @@ app.use(limiter);
 app.use(morgan("dev"));
 
 connectDB();
-connectRedis();
+if (CACHE_ENABLED) connectRedis();
 
 app.use("/api/auth", AuthRoutes);
 app.use("/api/users", UserRoutes);

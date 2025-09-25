@@ -1,8 +1,13 @@
 import { createClient } from "redis";
 
+export const CACHE_ENABLED =
+  String(process.env.CACHE_ENABLED || "true") === "true";
+const url = process.env.REDIS_URL || "redis://localhost:6379";
+
 const client = createClient({
-  url: process.env.REDIS_URL || "redis://localhost:6379",
+  url,
   socket: {
+    tls: url.startsWith("rediss://"),
     reconnectStrategy(retries) {
       if (retries > 10) {
         console.log("Max connection attempts reached");
@@ -30,8 +35,8 @@ client.on("end", () => {
 });
 
 const connectRedis = async () => {
+  if (!CACHE_ENABLED) return;
   try {
-    console.log(client);
     if (!client.isOpen) {
       await client.connect();
     }

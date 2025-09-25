@@ -26,6 +26,7 @@ CLIENT_URL=http://localhost:5173
 JWT_SECRET=change_me
 
 # Redis (use Upstash in production)
+CACHE_ENABLED=true
 REDIS_URL=redis://localhost:6379
 
 # OAuth
