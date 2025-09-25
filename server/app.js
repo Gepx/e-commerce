@@ -55,7 +55,11 @@ app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: "Oops! Something went wrong!" });
+  const message =
+    process.env.NODE_ENV === "production"
+      ? "Oops! Something went wrong!"
+      : err.message || "Internal Server Error";
+  res.status(500).json({ message });
 });
 
 // const PORT = process.env.PORT || 3000;
