@@ -8,7 +8,7 @@ async function setOAuthState(res) {
   res.cookie("oauth_state", state, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 30 * 60 * 1000,
   });
   return state;

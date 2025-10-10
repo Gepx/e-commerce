@@ -17,6 +17,6 @@ export const setAuthCookie = function setAuthCookie(res, token) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 30 * 60 * 1000,
-    sameSite: "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   });
 };

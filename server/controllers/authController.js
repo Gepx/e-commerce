@@ -73,7 +73,7 @@ const login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 1000,
-      sameSite: "lax",
+      sameSite: "none",
     });
 
     res.cookie("session", "1", {
